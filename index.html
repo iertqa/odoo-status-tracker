@@ -1211,7 +1211,7 @@
             </div>
             <div class="header-right">
                 <div class="live-clock">
-                    <span class="dot"></span>Live
+                    <span class="dot"></span>
                     <span id="clockDisplay">10:54:08</span>
                 </div>
                 <div class="stats">
@@ -1821,11 +1821,10 @@
             if (currentIndex >= tasks.length) currentIndex = tasks.length - 1;
             if (currentIndex < 0) currentIndex = 0;
 
-            // Determine range: 10 before, current, 10 after
-            const beforeCount = 10;
-            const afterCount = 10;
-            const start = Math.max(0, currentIndex - beforeCount);
-            const end = Math.min(tasks.length, currentIndex + afterCount + 1);
+            // Render the full list — with only ~50 tasks max this is cheap,
+            // and hiding items outside a window was confusing for a shared board.
+            const start = 0;
+            const end = tasks.length;
             const visible = tasks.slice(start, end);
 
             let html = '';
