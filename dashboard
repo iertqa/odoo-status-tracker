@@ -1,0 +1,2185 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Odoo · Task Tracker</title>
+    <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;📋&lt;/text&gt;&lt;/svg&gt;">
+    <style>
+        /* ─── All your existing styles (unchanged) ─── */
+        /* (paste the full CSS from the previous version) */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --bg: #0b0b12;
+            --glass: rgba(255, 255, 255, 0.055);
+            --glass-border: rgba(255, 255, 255, 0.07);
+            --glass-hover: rgba(255, 255, 255, 0.09);
+            --glass-active: rgba(255, 255, 255, 0.12);
+            --text-primary: #f1f1f7;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --text-muted: rgba(255, 255, 255, 0.3);
+            --accent: #7c5cbf;
+            --accent-glow: rgba(124, 92, 191, 0.35);
+            --accent-light: #a583e0;
+            --blue: #4f8cf7;
+            --green: #34c759;
+            --orange: #ff9500;
+            --red: #ff3b30;
+            --radius: 18px;
+            --radius-sm: 12px;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+            --transition: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --transition-soft: 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+            --font: -apple-system, 'Inter', 'Segoe UI', Roboto, sans-serif;
+        }
+        html,
+        body {
+            height: 100%;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: hidden;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(124, 92, 191, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(79, 140, 247, 0.08) 0%, transparent 50%),
+                var(--bg);
+            min-height: 100vh;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        .app {
+            width: 100%;
+            max-width: 860px;
+            max-height: 96vh;
+            background: var(--glass);
+            backdrop-filter: blur(28px) saturate(1.2);
+            -webkit-backdrop-filter: blur(28px) saturate(1.2);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            padding: 24px 28px 20px;
+            display: flex;
+            flex-direction: column;
+            transition: all var(--transition-soft);
+            position: relative;
+            overflow: hidden;
+        }
+        .app::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius);
+            pointer-events: none;
+            background: radial-gradient(ellipse at 30% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            z-index: 2;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-left .logo {
+            font-size: 26px;
+            line-height: 1;
+            filter: drop-shadow(0 2px 8px rgba(124, 92, 191, 0.3));
+        }
+        .header-left h1 {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #f1f1f7 60%, rgba(255, 255, 255, 0.6));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-left h1 span {
+            font-weight: 400;
+            font-size: 16px;
+            -webkit-text-fill-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .live-clock {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 5px 14px 5px 10px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .live-clock .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse-dot 1.8s ease-in-out infinite;
+            box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.2);
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.4;
+                transform: scale(0.75);
+            }
+        }
+        #clockDisplay {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.3px;
+            min-width: 70px;
+        }
+        .stats {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        .stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px 10px 4px 8px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .stats .num {
+            color: var(--text-primary);
+            font-weight: 600;
+            min-width: 18px;
+            text-align: center;
+        }
+        .lock-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            padding: 2px 10px 2px 8px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: var(--transition-soft);
+            cursor: default;
+            user-select: none;
+        }
+        .lock-badge.active {
+            color: var(--red);
+            background: rgba(255, 59, 48, 0.08);
+            border-color: rgba(255, 59, 48, 0.12);
+        }
+        .progress-wrap {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            z-index: 2;
+        }
+        .progress-wrap .label {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            min-width: 58px;
+        }
+        .progress-track {
+            flex: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 12px;
+            background: linear-gradient(90deg, var(--accent), var(--blue));
+            transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 0%;
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+        .progress-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            min-width: 36px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        .task-container {
+            flex: 1;
+            margin-top: 16px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 4px;
+            padding-bottom: 4px;
+            max-height: 460px;
+            scroll-behavior: smooth;
+            position: relative;
+            z-index: 2;
+            -webkit-overflow-scrolling: touch;
+        }
+        .task-container .empty-state {
+            text-align: center;
+            padding: 48px 20px 40px;
+            color: var(--text-secondary);
+        }
+        .empty-state .icon {
+            font-size: 44px;
+            margin-bottom: 12px;
+            display: block;
+            opacity: 0.6;
+        }
+        .empty-state h3 {
+            font-size: 17px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .empty-state p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px 12px;
+            padding: 12px 16px;
+            margin-bottom: 6px;
+            border-radius: var(--radius-sm);
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all var(--transition-soft);
+            cursor: pointer;
+            position: relative;
+            flex-wrap: wrap;
+            will-change: transform, background, border-color;
+            transform: translateZ(0);
+            -webkit-tap-highlight-color: transparent;
+        }
+        .task-item:hover {
+            background: var(--glass-hover);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+        .task-item:active {
+            transform: scale(0.985);
+            transition-duration: 0.08s;
+        }
+        .task-item.current {
+            background: rgba(124, 92, 191, 0.15);
+            border-color: var(--accent);
+            box-shadow: 0 0 24px rgba(124, 92, 191, 0.12), inset 0 1px 0 rgba(124, 92, 191, 0.15);
+            transform: scale(1.01);
+            padding: 13px 18px;
+            margin: 8px 0 10px 0;
+        }
+        .task-item.current:hover {
+            background: rgba(124, 92, 191, 0.2);
+            border-color: var(--accent-light);
+        }
+        .task-item.current:active {
+            transform: scale(0.995);
+        }
+        .task-item .index-badge {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-muted);
+            min-width: 30px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+            flex-shrink: 0;
+        }
+        .task-item.current .index-badge {
+            color: var(--accent-light);
+        }
+        .task-item .task-title {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 450;
+            color: var(--text-primary);
+            word-break: break-word;
+            min-width: 80px;
+            line-height: 1.4;
+        }
+        .task-item.current .task-title {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .task-item .task-status {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 12px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            white-space: nowrap;
+            transition: var(--transition-soft);
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            letter-spacing: 0.2px;
+            text-transform: capitalize;
+        }
+        .task-item .task-status.done {
+            background: rgba(52, 199, 89, 0.15);
+            color: var(--green);
+            border-color: rgba(52, 199, 89, 0.15);
+        }
+        .task-item .task-status.pending {
+            background: rgba(255, 149, 0, 0.12);
+            color: var(--orange);
+            border-color: rgba(255, 149, 0, 0.1);
+        }
+        .task-item .task-status.current {
+            background: rgba(124, 92, 191, 0.2);
+            color: var(--accent-light);
+            border-color: rgba(124, 92, 191, 0.2);
+        }
+        .task-item .task-status.blocked {
+            background: rgba(255, 59, 48, 0.12);
+            color: var(--red);
+            border-color: rgba(255, 59, 48, 0.1);
+        }
+        .task-item .current-badge {
+            display: none;
+            background: var(--accent);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 10px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(124, 92, 191, 0.3);
+        }
+        .task-item.current .current-badge {
+            display: inline-block;
+            animation: badge-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes badge-pop {
+            0% {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        .task-item .task-actions {
+            display: flex;
+            gap: 2px;
+            opacity: 0.3;
+            transition: opacity var(--transition-soft);
+            flex-shrink: 0;
+        }
+        .task-item:hover .task-actions,
+        .task-item.current .task-actions {
+            opacity: 1;
+        }
+        .task-item .task-actions button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            padding: 2px 4px;
+            border-radius: 6px;
+            color: var(--text-muted);
+            transition: all var(--transition-soft);
+            line-height: 1;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .task-item .task-actions button:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+            transform: scale(1.1);
+        }
+        .task-item .task-actions button:active {
+            transform: scale(0.9);
+        }
+        .task-item .task-actions button.danger:hover {
+            background: rgba(255, 59, 48, 0.15);
+            color: var(--red);
+        }
+        .task-item .task-actions button:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .add-task-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 2;
+        }
+        .add-task-row input {
+            flex: 1;
+            min-width: 140px;
+            padding: 10px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            transition: all var(--transition-soft);
+            outline: none;
+            font-family: var(--font);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .add-task-row input::placeholder {
+            color: var(--text-muted);
+        }
+        .add-task-row input:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 0 4px rgba(124, 92, 191, 0.08);
+        }
+        .add-task-row input:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .add-task-row select {
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            font-size: 13px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-primary);
+            outline: none;
+            cursor: pointer;
+            transition: var(--transition-soft);
+            font-family: var(--font);
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.3)'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 34px;
+            min-width: 110px;
+        }
+        .add-task-row select:focus {
+            border-color: var(--accent);
+            background-color: rgba(255, 255, 255, 0.07);
+        }
+        .add-task-row select:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        .add-task-row select option {
+            background: #1a1a24;
+            color: #f1f1f7;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-soft);
+            font-family: var(--font);
+            letter-spacing: 0.2px;
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            min-height: 40px;
+            border: 1px solid transparent;
+        }
+        .btn:active {
+            transform: scale(0.94);
+            transition-duration: 0.08s;
+        }
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .btn-glass:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(124, 92, 191, 0.25);
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: var(--accent-light);
+            border-color: var(--accent-light);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(124, 92, 191, 0.35);
+        }
+        .btn-success {
+            background: var(--green);
+            color: #fff;
+            border-color: var(--green);
+            box-shadow: 0 4px 16px rgba(52, 199, 89, 0.2);
+        }
+        .btn-success:hover:not(:disabled) {
+            background: #28a745;
+            border-color: #28a745;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(52, 199, 89, 0.3);
+        }
+        .btn-danger {
+            background: rgba(255, 59, 48, 0.15);
+            color: var(--red);
+            border-color: rgba(255, 59, 48, 0.15);
+        }
+        .btn-danger:hover:not(:disabled) {
+            background: rgba(255, 59, 48, 0.25);
+            border-color: rgba(255, 59, 48, 0.25);
+        }
+        .btn-sm {
+            padding: 5px 14px;
+            font-size: 12px;
+            min-height: 32px;
+        }
+        .btn-icon {
+            width: 40px;
+            padding: 0;
+            font-size: 18px;
+            border-radius: 40px;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+        .controls .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .controls .btn-group:last-child {
+            gap: 4px;
+        }
+        .floating-lock {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            pointer-events: auto;
+            cursor: pointer;
+            opacity: 0 !important;
+            transition: none;
+        }
+        .floating-lock .btn-lock {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 16px 20px;
+            min-height: 20px;
+            font-size: 0;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            color: transparent !important;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+        .floating-lock .btn-lock .lock-icon,
+        .floating-lock .btn-lock #floatingLockLabel {
+            display: none;
+        }
+        .floating-lock:hover,
+        .floating-lock .btn-lock:hover {
+            opacity: 0 !important;
+            background: transparent !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+            transform: none !important;
+        }
+        .app.locked .task-item .task-actions {
+            display: none !important;
+        }
+        .app.locked .add-task-row {
+            display: none !important;
+        }
+        .app.locked .controls {
+            display: none !important;
+        }
+        .app.locked .task-item {
+            cursor: default;
+            pointer-events: none;
+        }
+        .app.locked .task-item:active {
+            transform: none !important;
+        }
+        .app.locked .task-item.current:active {
+            transform: scale(1.01) !important;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px) scale(0.92);
+            background: rgba(20, 20, 30, 0.92);
+            backdrop-filter: blur(20px) saturate(1.3);
+            -webkit-backdrop-filter: blur(20px) saturate(1.3);
+            color: var(--text-primary);
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            opacity: 0;
+            transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            z-index: 999;
+            max-width: 90vw;
+            text-align: center;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0px) scale(1);
+        }
+        .toast.success {
+            border-color: rgba(52, 199, 89, 0.2);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(52, 199, 89, 0.05);
+        }
+        .toast.error {
+            border-color: rgba(255, 59, 48, 0.2);
+        }
+        .toast.info {
+            border-color: rgba(79, 140, 247, 0.15);
+        }
+        @media (max-width: 680px) {
+            .app {
+                padding: 16px 14px 14px;
+                max-height: 98vh;
+                border-radius: 16px;
+                max-width: 100%;
+            }
+            .header-left h1 {
+                font-size: 17px;
+            }
+            .header-left h1 span {
+                font-size: 14px;
+            }
+            .header-left .logo {
+                font-size: 22px;
+            }
+            .live-clock {
+                font-size: 12px;
+                padding: 3px 10px 3px 8px;
+            }
+            #clockDisplay {
+                min-width: 60px;
+            }
+            .stats {
+                font-size: 11px;
+                gap: 6px;
+            }
+            .stats span {
+                padding: 2px 8px 2px 6px;
+            }
+            .task-item {
+                padding: 10px 12px;
+                gap: 6px 8px;
+            }
+            .task-item.current {
+                padding: 12px 14px;
+            }
+            .task-item .task-title {
+                font-size: 13px;
+                min-width: 60px;
+                flex-basis: 100%;
+                order: 3;
+                margin-top: 2px;
+            }
+            .task-item.current .task-title {
+                font-size: 14px;
+            }
+            .task-item .index-badge {
+                font-size: 10px;
+                min-width: 24px;
+            }
+            .task-item .task-status {
+                font-size: 10px;
+                padding: 1px 10px;
+            }
+            .task-item .task-actions {
+                opacity: 0.7;
+            }
+            .task-item .task-actions button {
+                font-size: 14px;
+                width: 24px;
+                height: 24px;
+            }
+            .task-item .current-badge {
+                font-size: 8px;
+                padding: 1px 8px;
+            }
+            .add-task-row input {
+                font-size: 13px;
+                padding: 8px 14px;
+                min-width: 100px;
+            }
+            .add-task-row select {
+                font-size: 12px;
+                padding: 8px 30px 8px 12px;
+                min-width: 90px;
+            }
+            .btn {
+                font-size: 12px;
+                padding: 6px 14px;
+                min-height: 34px;
+            }
+            .btn-sm {
+                font-size: 11px;
+                padding: 4px 10px;
+                min-height: 28px;
+            }
+            .btn-icon {
+                width: 34px;
+                font-size: 16px;
+            }
+            .controls {
+                gap: 6px;
+                padding-top: 12px;
+                margin-top: 12px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .controls .btn-group {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .task-container {
+                max-height: 320px;
+            }
+            .toast {
+                font-size: 13px;
+                padding: 10px 20px;
+                bottom: 20px;
+            }
+            .floating-lock {
+                bottom: 16px;
+                right: 16px;
+            }
+            .floating-lock .btn-lock {
+                padding: 14px 18px;
+            }
+        }
+        @media (max-width: 420px) {
+            .app {
+                padding: 12px 10px 12px;
+            }
+            .header-left h1 {
+                font-size: 15px;
+            }
+            .header-left h1 span {
+                font-size: 12px;
+            }
+            .task-item .task-title {
+                font-size: 12px;
+            }
+            .task-item.current .task-title {
+                font-size: 13px;
+            }
+            .task-container {
+                max-height: 260px;
+            }
+            .add-task-row {
+                flex-direction: column;
+                gap: 6px;
+            }
+            .add-task-row input {
+                min-width: unset;
+                width: 100%;
+            }
+            .add-task-row select {
+                width: 100%;
+            }
+            .add-task-row .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        @keyframes slide-up {
+            0% {
+                opacity: 0;
+                transform: translateY(12px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .task-item {
+            animation: slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+        }
+        .task-item:nth-child(1) {
+            animation-delay: 0.01s;
+        }
+        .task-item:nth-child(2) {
+            animation-delay: 0.02s;
+        }
+        .task-item:nth-child(3) {
+            animation-delay: 0.03s;
+        }
+        .task-item:nth-child(4) {
+            animation-delay: 0.04s;
+        }
+        .task-item:nth-child(5) {
+            animation-delay: 0.05s;
+        }
+        .task-item:nth-child(6) {
+            animation-delay: 0.06s;
+        }
+        .task-item:nth-child(7) {
+            animation-delay: 0.07s;
+        }
+        .task-item:nth-child(8) {
+            animation-delay: 0.08s;
+        }
+        .task-item:nth-child(9) {
+            animation-delay: 0.09s;
+        }
+        .task-item:nth-child(10) {
+            animation-delay: 0.10s;
+        }
+        .task-item:nth-child(11) {
+            animation-delay: 0.11s;
+        }
+        .task-item:nth-child(12) {
+            animation-delay: 0.12s;
+        }
+        .task-item:nth-child(13) {
+            animation-delay: 0.13s;
+        }
+        .task-item:nth-child(14) {
+            animation-delay: 0.14s;
+        }
+        .task-item:nth-child(15) {
+            animation-delay: 0.15s;
+        }
+        .task-item:nth-child(16) {
+            animation-delay: 0.16s;
+        }
+        .task-item:nth-child(17) {
+            animation-delay: 0.17s;
+        }
+        .task-item:nth-child(18) {
+            animation-delay: 0.18s;
+        }
+        .task-item:nth-child(19) {
+            animation-delay: 0.19s;
+        }
+        .task-item:nth-child(20) {
+            animation-delay: 0.20s;
+        }
+        .task-item:nth-child(21) {
+            animation-delay: 0.21s;
+        }
+        .task-item:nth-child(22) {
+            animation-delay: 0.22s;
+        }
+        .task-item:nth-child(23) {
+            animation-delay: 0.23s;
+        }
+        .task-item:nth-child(24) {
+            animation-delay: 0.24s;
+        }
+        .task-item:nth-child(25) {
+            animation-delay: 0.25s;
+        }
+        .task-item:nth-child(26) {
+            animation-delay: 0.26s;
+        }
+        .task-item:nth-child(27) {
+            animation-delay: 0.27s;
+        }
+        .task-item:nth-child(28) {
+            animation-delay: 0.28s;
+        }
+        .task-item:nth-child(29) {
+            animation-delay: 0.29s;
+        }
+        .task-item:nth-child(30) {
+            animation-delay: 0.30s;
+        }
+        .task-item:nth-child(31) {
+            animation-delay: 0.31s;
+        }
+        .task-item:nth-child(32) {
+            animation-delay: 0.32s;
+        }
+        .task-item:nth-child(33) {
+            animation-delay: 0.33s;
+        }
+        .task-item:nth-child(34) {
+            animation-delay: 0.34s;
+        }
+        .task-item:nth-child(35) {
+            animation-delay: 0.35s;
+        }
+        .task-item:nth-child(36) {
+            animation-delay: 0.36s;
+        }
+        .task-item:nth-child(37) {
+            animation-delay: 0.37s;
+        }
+        .task-item:nth-child(38) {
+            animation-delay: 0.38s;
+        }
+        .task-item:nth-child(39) {
+            animation-delay: 0.39s;
+        }
+        .task-item:nth-child(40) {
+            animation-delay: 0.40s;
+        }
+        .task-item:nth-child(41) {
+            animation-delay: 0.41s;
+        }
+        .task-item:nth-child(42) {
+            animation-delay: 0.42s;
+        }
+        .task-item:nth-child(43) {
+            animation-delay: 0.43s;
+        }
+        .task-item:nth-child(44) {
+            animation-delay: 0.44s;
+        }
+        .task-item:nth-child(45) {
+            animation-delay: 0.45s;
+        }
+        .task-item:nth-child(46) {
+            animation-delay: 0.46s;
+        }
+        .task-item:nth-child(47) {
+            animation-delay: 0.47s;
+        }
+        .task-item:nth-child(48) {
+            animation-delay: 0.48s;
+        }
+        .task-item:nth-child(49) {
+            animation-delay: 0.49s;
+        }
+        .task-item:nth-child(50) {
+            animation-delay: 0.50s;
+        }
+        @keyframes btn-pop {
+            0% {
+                transform: scale(0.92);
+            }
+            60% {
+                transform: scale(1.04);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        .task-item.current::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, transparent 40%, rgba(124, 92, 191, 0.03) 60%, transparent 80%);
+            pointer-events: none;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+        @keyframes shimmer {
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: translateX(-20%);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(20%);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app" id="app">
+
+        <!-- ─── HEADER ─── -->
+        <header class="header">
+            <div class="header-left">
+                <span class="logo">📋</span>
+                <h1>Odoo <span>Tracker</span></h1>
+            </div>
+            <div class="header-right">
+                <div class="live-clock">
+                    <span class="dot"></span>
+                    <span id="clockDisplay">12:10:26</span>
+                </div>
+                <div class="stats">
+                    <span>📌 <span class="num" id="totalCount">31</span></span>
+                    <span>✅ <span class="num" id="doneCount">21</span></span>
+                    <span>⏳ <span class="num" id="pendingCount">9</span></span>
+                </div>
+                <span class="lock-badge" id="lockBadge">🔓</span>
+            </div>
+        </header>
+
+        <!-- ─── PROGRESS ─── -->
+        <div class="progress-wrap">
+            <span class="label">Progress</span>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill" style="width: 68%;"></div>
+            </div>
+            <span class="progress-label" id="progressLabel">68%</span>
+        </div>
+
+        <!-- ─── TASK LIST ─── -->
+        <div class="task-container" id="taskContainer">
+            <div class="empty-state hidden" id="emptyState">
+                <span class="icon">📭</span>
+                <h3>No tasks yet</h3>
+                <p>Add your first task below to get started.</p>
+            </div>
+            <div id="taskList">
+                            <div class="task-item " data-index="0">
+                                <span class="index-badge">#1</span>
+                                <span class="task-title">Collect all previous-operation / legacy stock data</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="0" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="0" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="0" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="0" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="1">
+                                <span class="index-badge">#2</span>
+                                <span class="task-title">Upload previous-operation stock into the system</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="1" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="1" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="1" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="1" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="2">
+                                <span class="index-badge">#3</span>
+                                <span class="task-title">Review and clean legacy stock records</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="2" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="2" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="2" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="2" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="3">
+                                <span class="index-badge">#4</span>
+                                <span class="task-title">Update trial balance to the agreed cut-off date</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="3" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="3" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="3" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="3" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="4">
+                                <span class="index-badge">#5</span>
+                                <span class="task-title">Compile historical purchase transactions</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="4" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="4" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="4" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="4" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="5">
+                                <span class="index-badge">#6</span>
+                                <span class="task-title">Verify purchase transactions against supporting records</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="5" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="5" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="5" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="5" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="6">
+                                <span class="index-badge">#7</span>
+                                <span class="task-title">Record / correct purchase transactions in Odoo</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="6" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="6" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="6" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="6" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="7">
+                                <span class="index-badge">#8</span>
+                                <span class="task-title">Complete initial stock and financial data cleanup</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="7" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="7" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="7" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="7" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="8">
+                                <span class="index-badge">#9</span>
+                                <span class="task-title">Compile project data from January onward</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="8" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="8" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="8" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="8" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="9">
+                                <span class="index-badge">#10</span>
+                                <span class="task-title">Structure project information for BOM preparation</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="9" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="9" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="9" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="9" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="10">
+                                <span class="index-badge">#11</span>
+                                <span class="task-title">Identify and categorize finished-goods items</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="10" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="10" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="10" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="10" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="11">
+                                <span class="index-badge">#12</span>
+                                <span class="task-title">Review existing product master data</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="11" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="11" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="11" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="11" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="12">
+                                <span class="index-badge">#13</span>
+                                <span class="task-title">Review initial operational workflows internally</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="12" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="12" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="12" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="12" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="13">
+                                <span class="index-badge">#14</span>
+                                <span class="task-title">Conduct initial CRM functionality testing</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="13" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="13" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="13" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="13" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="14">
+                                <span class="index-badge">#15</span>
+                                <span class="task-title">Review and validate operational workflows</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="14" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="14" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="14" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="14" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="15">
+                                <span class="index-badge">#16</span>
+                                <span class="task-title">Identify required workflow amendments</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="15" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="15" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="15" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="15" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="16">
+                                <span class="index-badge">#17</span>
+                                <span class="task-title">Amend workflow following discussions with RESON</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="16" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="16" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="16" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="16" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="17">
+                                <span class="index-badge">#18</span>
+                                <span class="task-title">Collect team-member email lists from all HODs</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="17" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="17" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="17" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="17" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="18">
+                                <span class="index-badge">#19</span>
+                                <span class="task-title">Submit additional development requirements to RESON</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="18" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="18" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="18" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="18" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="19">
+                                <span class="index-badge">#20</span>
+                                <span class="task-title">Begin preparation of realistic staging/testing environment</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="19" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="19" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="19" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="19" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item current" data-index="20">
+                                <span class="index-badge">#21</span>
+                                <span class="task-title">Finalize and release training schedule</span>
+                                <span class="task-status current">Current</span>
+                                <span class="current-badge">⭐ Current</span>
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="20" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="20" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="20" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="20" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="21">
+                                <span class="index-badge">#22</span>
+                                <span class="task-title">Complete internal testing of amended workflow with RESON</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="21" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="21" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="21" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="21" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="22">
+                                <span class="index-badge">#23</span>
+                                <span class="task-title">Verify employee access to staging environment</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="22" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="22" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="22" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="22" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="23">
+                                <span class="index-badge">#24</span>
+                                <span class="task-title">Confirm staging environment reflects the final approved workflow</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="23" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="23" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="23" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="23" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="24">
+                                <span class="index-badge">#25</span>
+                                <span class="task-title">Train Lead Generators &amp; CS Team</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="24" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="24" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="24" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="24" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="25">
+                                <span class="index-badge">#26</span>
+                                <span class="task-title">Train Designers, Design HOD &amp; Eissa Moosa</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="25" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="25" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="25" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="25" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="26">
+                                <span class="index-badge">#27</span>
+                                <span class="task-title">Train Production HOD Team</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="26" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="26" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="26" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="26" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="27">
+                                <span class="index-badge">#28</span>
+                                <span class="task-title">Confirm system readiness for production deployment</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="27" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="27" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="27" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="27" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="28">
+                                <span class="index-badge">#29</span>
+                                <span class="task-title">Conduct live UAT with HODs and employees</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="28" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="28" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="28" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="28" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="29">
+                                <span class="index-badge">#30</span>
+                                <span class="task-title">Resolve final UAT issues and obtain departmental confirmation</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="29" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="29" title="Move down">⬇</button>
+                                    <button class="set-current" data-index="29" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="29" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="30">
+                                <span class="index-badge">#31</span>
+                                <span class="task-title">Final project review, HOD sign-off, system handover and project closure</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="30" title="Move up">⬆</button>
+                                    <button class="move-down" data-index="30" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="30" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="30" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        </div>
+        </div>
+
+        <!-- ─── ADD TASK ─── -->
+        <div class="add-task-row">
+            <input type="text" id="newTaskInput" placeholder="New task title…" maxlength="120">
+            <select id="newTaskStatus">
+                <option value="pending">Pending</option>
+                <option value="current">Current</option>
+                <option value="done">Done</option>
+                <option value="blocked">Blocked</option>
+            </select>
+            <button class="btn btn-primary" id="addTaskBtn">➕ Add</button>
+        </div>
+
+        <!-- ─── CONTROLS ─── -->
+        <div class="controls">
+            <div class="btn-group">
+                <button class="btn btn-glass btn-sm" id="prevBtn" title="Move current backward">⬅ Prev</button>
+                <button class="btn btn-success btn-sm" id="markDoneBtn" title="Mark current as done">✅ Done</button>
+                <button class="btn btn-glass btn-sm" id="nextBtn" title="Move current forward">Next ➡</button>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-glass btn-sm" id="resetBtn" title="Reset to master plan">🔄 Reset</button>
+                <button class="btn btn-danger btn-sm" id="clearBtn" title="Delete all tasks (local)">🗑️ Clear</button>
+                <button class="btn btn-glass btn-sm" id="shareBtn" title="Share this exact task list">🔗 Share</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ─── FLOATING LOCK ─── -->
+    <div class="floating-lock" id="floatingLock" title="Toggle Lock (Ctrl+Shift+L)">
+        <button class="btn btn-lock" id="lockBtn">
+            <span class="lock-icon" id="floatingLockIcon">🔒</span>
+            <span id="floatingLockLabel">Lock</span>
+        </button>
+    </div>
+
+    <!-- ─── TOAST ─── -->
+    <div class="toast success" id="toast">🔗 Share link copied to clipboard!</div>
+
+    <script>
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  HARD‑CODED MASTER PLAN — edit this array to change tasks
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        const MASTER_PLAN = [
+            { id: 1, title: 'Collect all previous-operation / legacy stock data', status: 'done' },
+            { id: 2, title: 'Upload previous-operation stock into the system', status: 'done' },
+            { id: 3, title: 'Review and clean legacy stock records', status: 'done' },
+            { id: 4, title: 'Compile existing trial balance data', status: 'done' },
+            { id: 5, title: 'Reconcile trial balance against available financial records', status: 'done' },
+            { id: 6, title: 'Update trial balance to the agreed cut-off date', status: 'done' },
+            { id: 7, title: 'Compile historical purchase transactions', status: 'done' },
+            { id: 8, title: 'Verify purchase transactions against supporting records', status: 'done' },
+            { id: 9, title: 'Record / correct purchase transactions in Odoo', status: 'done' },
+            { id: 10, title: 'Complete initial stock and financial data cleanup', status: 'done' },
+            { id: 11, title: 'Compile project data from January onward', status: 'done' },
+            { id: 12, title: 'Structure project information for BOM preparation', status: 'done' },
+            { id: 13, title: 'Identify and categorize finished-goods items', status: 'done' },
+            { id: 14, title: 'Review existing product master data', status: 'done' },
+            { id: 15, title: 'Compile BOM requirements for finished goods', status: 'done' },
+            { id: 16, title: 'Prepare BOM data for system upload', status: 'done' },
+            { id: 17, title: 'Upload BOMs into Odoo', status: 'done' },
+            { id: 18, title: 'Add material and production costing to BOMs', status: 'done' },
+            { id: 19, title: 'Verify BOM calculations against actual products', status: 'done' },
+            { id: 20, title: 'Link stock, BOM and costing information', status: 'done' },
+            { id: 21, title: 'Prepare six-month operational / costing data', status: 'done' },
+            { id: 22, title: 'Conduct six-month trend and variance analysis', status: 'done' },
+            { id: 23, title: 'Review initial operational workflows internally', status: 'done' },
+            { id: 24, title: 'Review HR access requirements by role', status: 'done' },
+            { id: 25, title: 'Conduct initial CRM functionality testing', status: 'done' },
+            { id: 26, title: 'Review and validate operational workflows', status: 'done' },
+            { id: 27, title: 'Identify required workflow amendments', status: 'done' },
+            { id: 28, title: 'Amend workflow following discussions with RESON', status: 'done' },
+            { id: 29, title: 'Submit additional development requirements to RESON', status: 'done' },
+            { id: 30, title: 'Begin preparation of realistic staging/testing environment', status: 'done' },
+            { id: 31, title: 'Complete internal testing of amended workflow with RESON', status: 'current' },
+            { id: 32, title: 'Conduct final workflow review with RESON', status: 'pending' },
+            { id: 33, title: 'Close all remaining workflow amendments / development points', status: 'pending' },
+            { id: 34, title: 'Confirm staging environment reflects the final approved workflow', status: 'pending' },
+            { id: 35, title: 'Validate staging environment using realistic operational data', status: 'pending' },
+            { id: 36, title: 'Finalize HR role/access matrix', status: 'pending' },
+            { id: 37, title: 'Collect team-member email lists from all HODs', status: 'pending' },
+            { id: 38, title: 'Verify employee access to staging environment', status: 'pending' },
+            { id: 39, title: 'Finalize and release training schedule', status: 'pending' },
+            { id: 40, title: 'Train Lead Generators & CS Team', status: 'pending' },
+            { id: 41, title: 'Train Designers, Design HOD & Eissa Moosa', status: 'pending' },
+            { id: 42, title: 'Train Production HOD Team', status: 'pending' },
+            { id: 43, title: 'Conduct developer/consultant pretest across complete workflow', status: 'pending' },
+            { id: 44, title: 'Log and prioritize issues identified during pretest', status: 'pending' },
+            { id: 45, title: 'Resolve critical issues and retest affected workflows', status: 'pending' },
+            { id: 46, title: 'Confirm system readiness for production deployment', status: 'pending' },
+            { id: 47, title: 'Deploy finalized system to production environment', status: 'pending' },
+            { id: 48, title: 'Conduct live UAT with HODs and employees', status: 'pending' },
+            { id: 49, title: 'Resolve final UAT issues and obtain departmental confirmation', status: 'pending' },
+            { id: 50, title: 'Final project review, HOD sign-off, system handover and project closure', status: 'pending' },
+        ];
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  STATE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        let tasks = [];
+        let currentIndex = 0;
+        let isLocked = false;
+
+        const STORAGE_KEY = 'odoo_tracker_data';
+        const LOCK_KEY = 'odoo_tracker_locked';
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  LOAD / SAVE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function loadState() {
+            // Lock state
+            try {
+                isLocked = localStorage.getItem(LOCK_KEY) === 'true';
+            } catch (_) { isLocked = false; }
+
+            // Tasks: try localStorage first, then fallback to MASTER_PLAN
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const data = JSON.parse(raw);
+                    tasks = data.tasks || [];
+                    currentIndex = data.currentIndex ?? 0;
+                    if (tasks.length === 0) currentIndex = 0;
+                    if (currentIndex >= tasks.length) currentIndex = Math.max(0, tasks.length - 1);
+                    return;
+                }
+            } catch (_) { /* fall through */ }
+
+            // First load: use the master plan
+            tasks = JSON.parse(JSON.stringify(MASTER_PLAN));
+            currentIndex = 30; // task #31 is 'current'
+            saveTasks();
+        }
+
+        function saveTasks() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks, currentIndex }));
+        }
+
+        function saveLockState() {
+            localStorage.setItem(LOCK_KEY, String(isLocked));
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  SHARE (encode current state into URL)
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function encodeData(data) {
+            const json = JSON.stringify(data);
+            return btoa(unescape(encodeURIComponent(json)));
+        }
+
+        function decodeData(encoded) {
+            try {
+                const json = decodeURIComponent(escape(atob(encoded)));
+                return JSON.parse(json);
+            } catch (_) { return null; }
+        }
+
+        function shareCurrentData() {
+            const data = { tasks, currentIndex };
+            const encoded = encodeData(data);
+            const url = window.location.origin + window.location.pathname + '#data=' + encoded;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('🔗 Share link copied to clipboard!', 'success');
+                }).catch(() => fallbackCopy(url));
+            } else {
+                fallbackCopy(url);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+                showToast('🔗 Share link copied to clipboard!', 'success');
+            } catch (_) {
+                showToast('Could not copy. Please copy this URL manually: ' + text, 'info');
+            }
+            document.body.removeChild(ta);
+        }
+
+        // Check URL hash on load
+        function loadFromHash() {
+            const hash = window.location.hash;
+            if (hash.startsWith('#data=')) {
+                const encoded = hash.substring(6);
+                const decoded = decodeData(encoded);
+                if (decoded && decoded.tasks && Array.isArray(decoded.tasks)) {
+                    tasks = decoded.tasks;
+                    currentIndex = decoded.currentIndex ?? 0;
+                    if (currentIndex >= tasks.length) currentIndex = Math.max(0, tasks.length - 1);
+                    saveTasks();
+                    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+                    showToast('📥 Shared task list loaded!', 'success');
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RENDER
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function render() {
+            const container = document.getElementById('taskList');
+            const empty = document.getElementById('emptyState');
+
+            if (tasks.length === 0) {
+                container.innerHTML = '';
+                empty.classList.remove('hidden');
+                updateStats();
+                updateProgress();
+                updateControls();
+                updateLockUI();
+                return;
+            }
+            empty.classList.add('hidden');
+
+            if (currentIndex >= tasks.length) currentIndex = tasks.length - 1;
+            if (currentIndex < 0) currentIndex = 0;
+
+            let html = '';
+            tasks.forEach((task, idx) => {
+                const isCurrent = idx === currentIndex;
+                const statusLabel = task.status.charAt(0).toUpperCase() + task.status.slice(1);
+                const statusClass = task.status;
+
+                html += `
+                            <div class="task-item ${isCurrent ? 'current' : ''}" data-index="${idx}">
+                                <span class="index-badge">#${idx + 1}</span>
+                                <span class="task-title">${escapeHtml(task.title)}</span>
+                                <span class="task-status ${statusClass}">${statusLabel}</span>
+                                ${isCurrent ? '<span class="current-badge">⭐ Current</span>' : ''}
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="${idx}" title="Move up" ${idx === 0 ? 'disabled' : ''}>⬆</button>
+                                    <button class="move-down" data-index="${idx}" title="Move down" ${idx === tasks.length - 1 ? 'disabled' : ''}>⬇</button>
+                                    <button class="set-current" data-index="${idx}" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="${idx}" title="Delete">✕</button>
+                                </span>
+                            </div>
+                        `;
+            });
+
+            container.innerHTML = html;
+
+            if (!isLocked) {
+                container.querySelectorAll('.move-up').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.dataset.index, 10);
+                        moveTask(idx, -1);
+                    });
+                });
+
+                container.querySelectorAll('.move-down').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.dataset.index, 10);
+                        moveTask(idx, 1);
+                    });
+                });
+
+                container.querySelectorAll('.set-current').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.dataset.index, 10);
+                        setCurrent(idx);
+                    });
+                });
+
+                container.querySelectorAll('.delete-task').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.dataset.index, 10);
+                        deleteTask(idx);
+                    });
+                });
+
+                container.querySelectorAll('.task-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (e.target.closest('.task-actions')) return;
+                        const idx = parseInt(item.dataset.index, 10);
+                        if (!isNaN(idx) && idx !== currentIndex) {
+                            setCurrent(idx);
+                        }
+                    });
+                });
+            } else {
+                container.querySelectorAll('.task-actions button').forEach(btn => { btn.disabled = true; });
+                container.querySelectorAll('.task-item').forEach(item => { item.style.cursor = 'default'; });
+            }
+
+            updateStats();
+            updateProgress();
+            updateControls();
+            updateLockUI();
+            saveTasks();
+            document.getElementById('app').classList.toggle('locked', isLocked);
+            scrollToCurrent();
+        }
+
+        function scrollToCurrent() {
+            const container = document.getElementById('taskContainer');
+            const currentEl = container.querySelector('.task-item.current');
+            if (currentEl) {
+                requestAnimationFrame(() => {
+                    currentEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                });
+            }
+        }
+
+        function updateStats() {
+            const total = tasks.length;
+            const done = tasks.filter(t => t.status === 'done').length;
+            const pending = tasks.filter(t => t.status === 'pending' || t.status === 'blocked').length;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('doneCount').textContent = done;
+            document.getElementById('pendingCount').textContent = pending;
+        }
+
+        function updateProgress() {
+            const total = tasks.length;
+            if (total === 0) {
+                document.getElementById('progressFill').style.width = '0%';
+                document.getElementById('progressLabel').textContent = '0%';
+                return;
+            }
+            const done = tasks.filter(t => t.status === 'done').length;
+            const pct = Math.round((done / total) * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressLabel').textContent = pct + '%';
+        }
+
+        function updateControls() {
+            const hasTasks = tasks.length > 0;
+            document.getElementById('prevBtn').disabled = !hasTasks || currentIndex <= 0;
+            document.getElementById('nextBtn').disabled = !hasTasks || currentIndex >= tasks.length - 1;
+            document.getElementById('markDoneBtn').disabled = !hasTasks || tasks[currentIndex]?.status === 'done';
+        }
+
+        function updateLockUI() {
+            const badge = document.getElementById('lockBadge');
+            const btn = document.getElementById('lockBtn');
+            const label = document.getElementById('floatingLockLabel');
+            const icon = document.getElementById('floatingLockIcon');
+
+            if (isLocked) {
+                badge.textContent = '🔒';
+                badge.classList.add('active');
+                label.textContent = 'Unlock';
+                icon.textContent = '🔓';
+                btn.classList.add('locked');
+            } else {
+                badge.textContent = '🔓';
+                badge.classList.remove('active');
+                label.textContent = 'Lock';
+                icon.textContent = '🔒';
+                btn.classList.remove('locked');
+            }
+            document.getElementById('app').classList.toggle('locked', isLocked);
+            document.getElementById('newTaskInput').disabled = isLocked;
+            document.getElementById('newTaskStatus').disabled = isLocked;
+            document.getElementById('addTaskBtn').disabled = isLocked;
+            updateControls();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  ACTIONS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function guard() {
+            if (isLocked) {
+                showToast('🔒 Locked — unlock to edit', 'info');
+                return false;
+            }
+            return true;
+        }
+
+        function setCurrent(idx) {
+            if (!guard()) return;
+            if (idx < 0 || idx >= tasks.length) return;
+            tasks.forEach(t => { if (t.status === 'current') t.status = 'pending'; });
+            tasks[idx].status = 'current';
+            currentIndex = idx;
+            render();
+            showToast(`🎯 Current: "${tasks[idx].title}"`, 'success');
+        }
+
+        function moveTask(idx, direction) {
+            if (!guard()) return;
+            const newIdx = idx + direction;
+            if (newIdx < 0 || newIdx >= tasks.length) return;
+            [tasks[idx], tasks[newIdx]] = [tasks[newIdx], tasks[idx]];
+            if (currentIndex === idx) currentIndex = newIdx;
+            else if (currentIndex === newIdx) currentIndex = idx;
+            render();
+        }
+
+        function deleteTask(idx) {
+            if (!guard()) return;
+            if (idx < 0 || idx >= tasks.length) return;
+            const title = tasks[idx].title;
+            tasks.splice(idx, 1);
+            if (currentIndex >= tasks.length) currentIndex = Math.max(0, tasks.length - 1);
+            if (tasks.length === 0) { currentIndex = 0; } else if (currentIndex === idx && idx < tasks.length) {
+                if (tasks[currentIndex]) tasks[currentIndex].status = 'current';
+            } else if (currentIndex > idx) {
+                currentIndex--;
+            }
+            if (tasks.length > 0 && !tasks.some(t => t.status === 'current')) {
+                const firstPending = tasks.findIndex(t => t.status !== 'done');
+                if (firstPending !== -1) {
+                    tasks[firstPending].status = 'current';
+                    currentIndex = firstPending;
+                } else {
+                    tasks[0].status = 'current';
+                    currentIndex = 0;
+                }
+            }
+            render();
+            showToast(`🗑️ Deleted: "${title}"`, 'error');
+        }
+
+        function addTask(title, status = 'pending') {
+            if (!guard()) return;
+            const trimmed = title.trim();
+            if (!trimmed) { showToast('Please enter a task title.', 'error'); return; }
+            const maxId = tasks.reduce((max, t) => Math.max(max, t.id), 0);
+            const newTask = { id: maxId + 1, title: trimmed, status: status };
+            if (status === 'current') {
+                tasks.forEach(t => { if (t.status === 'current') t.status = 'pending'; });
+            }
+            tasks.push(newTask);
+            if (status === 'current') {
+                currentIndex = tasks.length - 1;
+            } else {
+                const hasCurrent = tasks.some(t => t.status === 'current');
+                if (!hasCurrent && status === 'pending') {
+                    const firstPending = tasks.findIndex(t => t.status === 'pending');
+                    if (firstPending !== -1) {
+                        tasks[firstPending].status = 'current';
+                        currentIndex = firstPending;
+                    }
+                }
+            }
+            render();
+            showToast(`✅ Added: "${trimmed}"`, 'success');
+            document.getElementById('newTaskInput').value = '';
+            document.getElementById('newTaskInput').focus();
+        }
+
+        function markCurrentDone() {
+            if (!guard()) return;
+            if (tasks.length === 0 || currentIndex >= tasks.length) {
+                showToast('No current task.', 'error');
+                return;
+            }
+            const task = tasks[currentIndex];
+            if (task.status === 'done') { showToast('Already done.', 'info'); return; }
+            task.status = 'done';
+
+            let nextIdx = -1;
+            for (let i = currentIndex + 1; i < tasks.length; i++) {
+                if (tasks[i].status !== 'done') { nextIdx = i; break; }
+            }
+            if (nextIdx === -1) {
+                for (let i = 0; i < currentIndex; i++) {
+                    if (tasks[i].status !== 'done') { nextIdx = i; break; }
+                }
+            }
+            if (nextIdx !== -1) {
+                tasks[nextIdx].status = 'current';
+                currentIndex = nextIdx;
+            } else {
+                if (tasks.length > 0) {
+                    const anyUndone = tasks.findIndex(t => t.status !== 'done');
+                    if (anyUndone !== -1) {
+                        tasks[anyUndone].status = 'current';
+                        currentIndex = anyUndone;
+                    } else {
+                        tasks[0].status = 'current';
+                        currentIndex = 0;
+                    }
+                }
+            }
+            render();
+            showToast(`✅ "${task.title}" marked done!`, 'success');
+        }
+
+        function moveCurrent(direction) {
+            if (!guard()) return;
+            const newIdx = currentIndex + direction;
+            if (newIdx < 0 || newIdx >= tasks.length) return;
+            if (tasks[currentIndex]) tasks[currentIndex].status = 'pending';
+            tasks[newIdx].status = 'current';
+            currentIndex = newIdx;
+            render();
+            showToast(`➡️ Moved to: "${tasks[currentIndex].title}"`, 'info');
+        }
+
+        function resetToMaster() {
+            if (!guard()) return;
+            if (tasks.length > 0 && !confirm('Reset to the master 50‑step plan? Your local changes will be lost.')) return;
+            tasks = JSON.parse(JSON.stringify(MASTER_PLAN));
+            currentIndex = 30;
+            render();
+            showToast('🔄 Reset to master plan.', 'info');
+        }
+
+        function clearAllTasks() {
+            if (!guard()) return;
+            if (tasks.length === 0) { showToast('No tasks to clear.', 'info'); return; }
+            if (!confirm('Delete all tasks permanently?')) return;
+            tasks = [];
+            currentIndex = 0;
+            render();
+            showToast('🗑️ All tasks cleared.', 'error');
+        }
+
+        function toggleLock() {
+            isLocked = !isLocked;
+            saveLockState();
+            render();
+            showToast(isLocked ? '🔒 Locked' : '🔓 Unlocked', 'info');
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  HELPERS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        let toastTimeout = null;
+
+        function showToast(message, type = 'info') {
+            const el = document.getElementById('toast');
+            el.textContent = message;
+            el.className = 'toast ' + type;
+            void el.offsetWidth;
+            el.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                el.classList.remove('show');
+            }, 2800);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clockDisplay').textContent =
+                String(now.getHours()).padStart(2, '0') + ':' +
+                String(now.getMinutes()).padStart(2, '0') + ':' +
+                String(now.getSeconds()).padStart(2, '0');
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INIT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function init() {
+            // Load from URL hash first (if shared link)
+            const loadedFromHash = loadFromHash();
+
+            // If not loaded from hash, load from localStorage / default
+            if (!loadedFromHash) {
+                loadState();
+            }
+
+            // Ensure there's a current task
+            if (tasks.length > 0) {
+                const hasCurrent = tasks.some(t => t.status === 'current');
+                if (!hasCurrent) {
+                    const idx = tasks.findIndex(t => t.status !== 'done');
+                    if (idx !== -1) {
+                        tasks[idx].status = 'current';
+                        currentIndex = idx;
+                    } else {
+                        tasks[0].status = 'current';
+                        currentIndex = 0;
+                    }
+                } else {
+                    const currentIdx = tasks.findIndex(t => t.status === 'current');
+                    if (currentIdx !== -1) currentIndex = currentIdx;
+                    else {
+                        const idx = tasks.findIndex(t => t.status !== 'done');
+                        if (idx !== -1) {
+                            tasks[idx].status = 'current';
+                            currentIndex = idx;
+                        } else {
+                            tasks[0].status = 'current';
+                            currentIndex = 0;
+                        }
+                    }
+                }
+                saveTasks();
+            }
+
+            render();
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // ── Event bindings ──
+            document.getElementById('addTaskBtn').addEventListener('click', () => {
+                const input = document.getElementById('newTaskInput');
+                const status = document.getElementById('newTaskStatus').value;
+                addTask(input.value, status);
+            });
+
+            document.getElementById('newTaskInput').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') document.getElementById('addTaskBtn').click();
+            });
+
+            document.getElementById('prevBtn').addEventListener('click', () => moveCurrent(-1));
+            document.getElementById('nextBtn').addEventListener('click', () => moveCurrent(1));
+            document.getElementById('markDoneBtn').addEventListener('click', markCurrentDone);
+            document.getElementById('resetBtn').addEventListener('click', resetToMaster);
+            document.getElementById('clearBtn').addEventListener('click', clearAllTasks);
+            document.getElementById('lockBtn').addEventListener('click', toggleLock);
+            document.getElementById('shareBtn').addEventListener('click', shareCurrentData);
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.shiftKey && (e.key === 'L' || e.key === 'l')) {
+                    e.preventDefault();
+                    toggleLock();
+                    return;
+                }
+                if (isLocked) return;
+                if (e.ctrlKey && e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    moveCurrent(-1);
+                } else if (e.ctrlKey && e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    moveCurrent(1);
+                } else if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    markCurrentDone();
+                }
+            });
+
+            showToast('📋 Static tasks – edit MASTER_PLAN in the code to update', 'info');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+
+</body></html>
