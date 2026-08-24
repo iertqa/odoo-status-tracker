@@ -1,11 +1,13 @@
+<!DOCTYPE html>
 <html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Odoo · Task Tracker</title>
     <link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;📋&lt;/text&gt;&lt;/svg&gt;">
     <style>
-        /* ─── All your existing styles (unchanged) ─── */
-        /* (paste the full CSS from the previous version) */
+        /* ─────────────────────────────────────────────────────
+                   RESET & BASE
+                   ───────────────────────────────────────────────────── */
         *,
         *::before,
         *::after {
@@ -13,6 +15,7 @@
             margin: 0;
             padding: 0;
         }
+
         :root {
             --bg: #0b0b12;
             --glass: rgba(255, 255, 255, 0.055);
@@ -36,6 +39,7 @@
             --transition-soft: 0.25s cubic-bezier(0.22, 1, 0.36, 1);
             --font: -apple-system, 'Inter', 'Segoe UI', Roboto, sans-serif;
         }
+
         html,
         body {
             height: 100%;
@@ -46,6 +50,7 @@
             -moz-osx-font-smoothing: grayscale;
             overflow: hidden;
         }
+
         body {
             display: flex;
             justify-content: center;
@@ -57,6 +62,10 @@
                 var(--bg);
             min-height: 100vh;
         }
+
+        /* ─────────────────────────────────────────────────────
+                   SCROLLBAR
+                   ───────────────────────────────────────────────────── */
         ::-webkit-scrollbar {
             width: 4px;
         }
@@ -70,9 +79,13 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.25);
         }
+
+        /* ─────────────────────────────────────────────────────
+                   APP CONTAINER — glass
+                   ───────────────────────────────────────────────────── */
         .app {
             width: 100%;
-            max-width: 860px;
+            max-width: 780px;
             max-height: 96vh;
             background: var(--glass);
             backdrop-filter: blur(28px) saturate(1.2);
@@ -87,6 +100,8 @@
             position: relative;
             overflow: hidden;
         }
+
+        /* subtle glass overlay */
         .app::before {
             content: '';
             position: absolute;
@@ -95,6 +110,10 @@
             pointer-events: none;
             background: radial-gradient(ellipse at 30% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
         }
+
+        /* ─────────────────────────────────────────────────────
+                   HEADER
+                   ───────────────────────────────────────────────────── */
         .header {
             display: flex;
             justify-content: space-between;
@@ -106,16 +125,19 @@
             position: relative;
             z-index: 2;
         }
+
         .header-left {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .header-left .logo {
             font-size: 26px;
             line-height: 1;
             filter: drop-shadow(0 2px 8px rgba(124, 92, 191, 0.3));
         }
+
         .header-left h1 {
             font-size: 20px;
             font-weight: 700;
@@ -125,18 +147,22 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
         .header-left h1 span {
             font-weight: 400;
             font-size: 16px;
             -webkit-text-fill-color: var(--text-secondary);
             color: var(--text-secondary);
         }
+
         .header-right {
             display: flex;
             align-items: center;
             gap: 14px;
             flex-wrap: wrap;
         }
+
+        /* ── live clock ── */
         .live-clock {
             display: flex;
             align-items: center;
@@ -151,6 +177,7 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
+
         .live-clock .dot {
             display: inline-block;
             width: 8px;
@@ -160,6 +187,7 @@
             animation: pulse-dot 1.8s ease-in-out infinite;
             box-shadow: 0 0 0 2px rgba(52, 199, 89, 0.2);
         }
+
         @keyframes pulse-dot {
             0%,
             100% {
@@ -171,11 +199,14 @@
                 transform: scale(0.75);
             }
         }
+
         #clockDisplay {
             font-variant-numeric: tabular-nums;
             letter-spacing: 0.3px;
             min-width: 70px;
         }
+
+        /* ── stats ── */
         .stats {
             display: flex;
             gap: 12px;
@@ -183,6 +214,7 @@
             font-weight: 500;
             color: var(--text-secondary);
         }
+
         .stats span {
             display: flex;
             align-items: center;
@@ -192,12 +224,15 @@
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.04);
         }
+
         .stats .num {
             color: var(--text-primary);
             font-weight: 600;
             min-width: 18px;
             text-align: center;
         }
+
+        /* ── lock badge in header ── */
         .lock-badge {
             display: inline-flex;
             align-items: center;
@@ -213,11 +248,51 @@
             cursor: default;
             user-select: none;
         }
+
         .lock-badge.active {
             color: var(--red);
             background: rgba(255, 59, 48, 0.08);
             border-color: rgba(255, 59, 48, 0.12);
         }
+
+        /* ── save-status button in header ── */
+        .save-status-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--text-secondary);
+            padding: 4px 12px 4px 10px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: var(--transition-soft);
+            white-space: nowrap;
+        }
+
+        .save-status-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .save-status-btn.connected {
+            color: var(--green);
+            background: rgba(52, 199, 89, 0.08);
+            border-color: rgba(52, 199, 89, 0.15);
+            cursor: default;
+        }
+
+        .save-status-btn.needs-attention {
+            color: var(--orange);
+            background: rgba(255, 149, 0, 0.08);
+            border-color: rgba(255, 149, 0, 0.15);
+        }
+
+        /* ─────────────────────────────────────────────────────
+                   PROGRESS
+                   ───────────────────────────────────────────────────── */
         .progress-wrap {
             margin-top: 14px;
             display: flex;
@@ -226,6 +301,7 @@
             position: relative;
             z-index: 2;
         }
+
         .progress-wrap .label {
             font-size: 12px;
             font-weight: 500;
@@ -233,6 +309,7 @@
             letter-spacing: 0.3px;
             min-width: 58px;
         }
+
         .progress-track {
             flex: 1;
             height: 5px;
@@ -241,6 +318,7 @@
             overflow: hidden;
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
         }
+
         .progress-fill {
             height: 100%;
             border-radius: 12px;
@@ -249,6 +327,7 @@
             width: 0%;
             box-shadow: 0 0 16px var(--accent-glow);
         }
+
         .progress-label {
             font-size: 12px;
             font-weight: 600;
@@ -257,6 +336,10 @@
             text-align: right;
             font-variant-numeric: tabular-nums;
         }
+
+        /* ─────────────────────────────────────────────────────
+                   TASK LIST
+                   ───────────────────────────────────────────────────── */
         .task-container {
             flex: 1;
             margin-top: 16px;
@@ -270,11 +353,13 @@
             z-index: 2;
             -webkit-overflow-scrolling: touch;
         }
+
         .task-container .empty-state {
             text-align: center;
             padding: 48px 20px 40px;
             color: var(--text-secondary);
         }
+
         .empty-state .icon {
             font-size: 44px;
             margin-bottom: 12px;
@@ -291,6 +376,8 @@
             font-size: 13px;
             color: var(--text-muted);
         }
+
+        /* ── task item ── */
         .task-item {
             display: flex;
             align-items: center;
@@ -308,14 +395,18 @@
             transform: translateZ(0);
             -webkit-tap-highlight-color: transparent;
         }
+
         .task-item:hover {
             background: var(--glass-hover);
             border-color: rgba(255, 255, 255, 0.08);
         }
+
         .task-item:active {
             transform: scale(0.985);
             transition-duration: 0.08s;
         }
+
+        /* current task — glow + subtle scale, no overflow */
         .task-item.current {
             background: rgba(124, 92, 191, 0.15);
             border-color: var(--accent);
@@ -324,13 +415,16 @@
             padding: 13px 18px;
             margin: 8px 0 10px 0;
         }
+
         .task-item.current:hover {
             background: rgba(124, 92, 191, 0.2);
             border-color: var(--accent-light);
         }
+
         .task-item.current:active {
             transform: scale(0.995);
         }
+
         .task-item .index-badge {
             font-size: 11px;
             font-weight: 500;
@@ -340,9 +434,11 @@
             font-variant-numeric: tabular-nums;
             flex-shrink: 0;
         }
+
         .task-item.current .index-badge {
             color: var(--accent-light);
         }
+
         .task-item .task-title {
             flex: 1;
             font-size: 14px;
@@ -352,10 +448,12 @@
             min-width: 80px;
             line-height: 1.4;
         }
+
         .task-item.current .task-title {
             font-weight: 600;
             font-size: 15px;
         }
+
         .task-item .task-status {
             font-size: 11px;
             font-weight: 600;
@@ -370,6 +468,7 @@
             letter-spacing: 0.2px;
             text-transform: capitalize;
         }
+
         .task-item .task-status.done {
             background: rgba(52, 199, 89, 0.15);
             color: var(--green);
@@ -390,6 +489,7 @@
             color: var(--red);
             border-color: rgba(255, 59, 48, 0.1);
         }
+
         .task-item .current-badge {
             display: none;
             background: var(--accent);
@@ -403,10 +503,12 @@
             flex-shrink: 0;
             box-shadow: 0 2px 8px rgba(124, 92, 191, 0.3);
         }
+
         .task-item.current .current-badge {
             display: inline-block;
             animation: badge-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+
         @keyframes badge-pop {
             0% {
                 transform: scale(0.6);
@@ -417,6 +519,8 @@
                 opacity: 1;
             }
         }
+
+        /* ── task actions (buttons) ── */
         .task-item .task-actions {
             display: flex;
             gap: 2px;
@@ -424,10 +528,12 @@
             transition: opacity var(--transition-soft);
             flex-shrink: 0;
         }
+
         .task-item:hover .task-actions,
         .task-item.current .task-actions {
             opacity: 1;
         }
+
         .task-item .task-actions button {
             background: transparent;
             border: none;
@@ -446,23 +552,31 @@
             border-radius: 8px;
             background: rgba(255, 255, 255, 0.02);
         }
+
         .task-item .task-actions button:hover {
             background: rgba(255, 255, 255, 0.08);
             color: var(--text-primary);
             transform: scale(1.1);
         }
+
         .task-item .task-actions button:active {
             transform: scale(0.9);
         }
+
         .task-item .task-actions button.danger:hover {
             background: rgba(255, 59, 48, 0.15);
             color: var(--red);
         }
+
         .task-item .task-actions button:disabled {
             opacity: 0.2;
             cursor: not-allowed;
             transform: none !important;
         }
+
+        /* ─────────────────────────────────────────────────────
+                   ADD TASK ROW
+                   ───────────────────────────────────────────────────── */
         .add-task-row {
             display: flex;
             gap: 10px;
@@ -472,6 +586,7 @@
             position: relative;
             z-index: 2;
         }
+
         .add-task-row input {
             flex: 1;
             min-width: 140px;
@@ -487,18 +602,22 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
         }
+
         .add-task-row input::placeholder {
             color: var(--text-muted);
         }
+
         .add-task-row input:focus {
             border-color: var(--accent);
             background: rgba(255, 255, 255, 0.07);
             box-shadow: 0 0 0 4px rgba(124, 92, 191, 0.08);
         }
+
         .add-task-row input:disabled {
             opacity: 0.3;
             cursor: not-allowed;
         }
+
         .add-task-row select {
             padding: 10px 14px;
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -518,18 +637,25 @@
             padding-right: 34px;
             min-width: 110px;
         }
+
         .add-task-row select:focus {
             border-color: var(--accent);
             background-color: rgba(255, 255, 255, 0.07);
         }
+
         .add-task-row select:disabled {
             opacity: 0.3;
             cursor: not-allowed;
         }
+
         .add-task-row select option {
             background: #1a1a24;
             color: #f1f1f7;
         }
+
+        /* ─────────────────────────────────────────────────────
+                   BUTTONS
+                   ───────────────────────────────────────────────────── */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -550,15 +676,18 @@
             min-height: 40px;
             border: 1px solid transparent;
         }
+
         .btn:active {
             transform: scale(0.94);
             transition-duration: 0.08s;
         }
+
         .btn:disabled {
             opacity: 0.3;
             cursor: not-allowed;
             transform: none !important;
         }
+
         .btn-glass {
             background: rgba(255, 255, 255, 0.06);
             color: var(--text-primary);
@@ -566,56 +695,69 @@
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
         }
+
         .btn-glass:hover:not(:disabled) {
             background: rgba(255, 255, 255, 0.1);
             border-color: rgba(255, 255, 255, 0.1);
             transform: translateY(-1px);
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
         }
+
         .btn-primary {
             background: var(--accent);
             color: #fff;
             border-color: var(--accent);
             box-shadow: 0 4px 16px rgba(124, 92, 191, 0.25);
         }
+
         .btn-primary:hover:not(:disabled) {
             background: var(--accent-light);
             border-color: var(--accent-light);
             transform: translateY(-1px);
             box-shadow: 0 6px 24px rgba(124, 92, 191, 0.35);
         }
+
         .btn-success {
             background: var(--green);
             color: #fff;
             border-color: var(--green);
             box-shadow: 0 4px 16px rgba(52, 199, 89, 0.2);
         }
+
         .btn-success:hover:not(:disabled) {
             background: #28a745;
             border-color: #28a745;
             transform: translateY(-1px);
             box-shadow: 0 6px 24px rgba(52, 199, 89, 0.3);
         }
+
         .btn-danger {
             background: rgba(255, 59, 48, 0.15);
             color: var(--red);
             border-color: rgba(255, 59, 48, 0.15);
         }
+
         .btn-danger:hover:not(:disabled) {
             background: rgba(255, 59, 48, 0.25);
             border-color: rgba(255, 59, 48, 0.25);
         }
+
         .btn-sm {
             padding: 5px 14px;
             font-size: 12px;
             min-height: 32px;
         }
+
         .btn-icon {
             width: 40px;
             padding: 0;
             font-size: 18px;
             border-radius: 40px;
         }
+
+        /* ─────────────────────────────────────────────────────
+                   CONTROLS
+                   ───────────────────────────────────────────────────── */
         .controls {
             display: flex;
             flex-wrap: wrap;
@@ -628,15 +770,21 @@
             position: relative;
             z-index: 2;
         }
+
         .controls .btn-group {
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
             align-items: center;
         }
+
         .controls .btn-group:last-child {
             gap: 4px;
         }
+
+        /* ─────────────────────────────────────────────────────
+                   FLOATING LOCK (100% transparent, clickable)
+                   ───────────────────────────────────────────────────── */
         .floating-lock {
             position: fixed;
             bottom: 20px;
@@ -645,13 +793,17 @@
             pointer-events: auto;
             cursor: pointer;
             opacity: 0 !important;
+            /* Completely invisible */
             transition: none;
+            /* No hover effects */
         }
+
         .floating-lock .btn-lock {
             background: transparent !important;
             border: none !important;
             box-shadow: none !important;
             padding: 16px 20px;
+            /* Generous click area */
             min-height: 20px;
             font-size: 0;
             backdrop-filter: none !important;
@@ -660,10 +812,13 @@
             cursor: pointer;
             pointer-events: auto;
         }
+
         .floating-lock .btn-lock .lock-icon,
         .floating-lock .btn-lock #floatingLockLabel {
             display: none;
+            /* Hide text/icon */
         }
+
         .floating-lock:hover,
         .floating-lock .btn-lock:hover {
             opacity: 0 !important;
@@ -672,25 +827,39 @@
             box-shadow: none !important;
             transform: none !important;
         }
+
+        /* ─────────────────────────────────────────────────────
+                   LOCK OVERLAY — hide all editing controls
+                   ───────────────────────────────────────────────────── */
         .app.locked .task-item .task-actions {
             display: none !important;
         }
+
         .app.locked .add-task-row {
             display: none !important;
         }
+
         .app.locked .controls {
             display: none !important;
         }
+
         .app.locked .task-item {
             cursor: default;
             pointer-events: none;
+            /* prevent clicks on task items */
         }
+
         .app.locked .task-item:active {
             transform: none !important;
         }
+
         .app.locked .task-item.current:active {
             transform: scale(1.01) !important;
         }
+
+        /* ─────────────────────────────────────────────────────
+                   TOAST
+                   ───────────────────────────────────────────────────── */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -713,10 +882,12 @@
             max-width: 90vw;
             text-align: center;
         }
+
         .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0px) scale(1);
         }
+
         .toast.success {
             border-color: rgba(52, 199, 89, 0.2);
             box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(52, 199, 89, 0.05);
@@ -727,6 +898,10 @@
         .toast.info {
             border-color: rgba(79, 140, 247, 0.15);
         }
+
+        /* ─────────────────────────────────────────────────────
+                   RESPONSIVE
+                   ───────────────────────────────────────────────────── */
         @media (max-width: 680px) {
             .app {
                 padding: 16px 14px 14px;
@@ -734,6 +909,7 @@
                 border-radius: 16px;
                 max-width: 100%;
             }
+
             .header-left h1 {
                 font-size: 17px;
             }
@@ -743,6 +919,7 @@
             .header-left .logo {
                 font-size: 22px;
             }
+
             .live-clock {
                 font-size: 12px;
                 padding: 3px 10px 3px 8px;
@@ -750,6 +927,7 @@
             #clockDisplay {
                 min-width: 60px;
             }
+
             .stats {
                 font-size: 11px;
                 gap: 6px;
@@ -757,6 +935,7 @@
             .stats span {
                 padding: 2px 8px 2px 6px;
             }
+
             .task-item {
                 padding: 10px 12px;
                 gap: 6px 8px;
@@ -794,6 +973,7 @@
                 font-size: 8px;
                 padding: 1px 8px;
             }
+
             .add-task-row input {
                 font-size: 13px;
                 padding: 8px 14px;
@@ -804,6 +984,7 @@
                 padding: 8px 30px 8px 12px;
                 min-width: 90px;
             }
+
             .btn {
                 font-size: 12px;
                 padding: 6px 14px;
@@ -818,6 +999,7 @@
                 width: 34px;
                 font-size: 16px;
             }
+
             .controls {
                 gap: 6px;
                 padding-top: 12px;
@@ -829,14 +1011,17 @@
                 justify-content: center;
                 flex-wrap: wrap;
             }
+
             .task-container {
                 max-height: 320px;
             }
+
             .toast {
                 font-size: 13px;
                 padding: 10px 20px;
                 bottom: 20px;
             }
+
             .floating-lock {
                 bottom: 16px;
                 right: 16px;
@@ -845,6 +1030,7 @@
                 padding: 14px 18px;
             }
         }
+
         @media (max-width: 420px) {
             .app {
                 padding: 12px 10px 12px;
@@ -880,6 +1066,10 @@
                 justify-content: center;
             }
         }
+
+        /* ─────────────────────────────────────────────────────
+                   BOUNCY ANIMATIONS — extra polish
+                   ───────────────────────────────────────────────────── */
         @keyframes slide-up {
             0% {
                 opacity: 0;
@@ -890,159 +1080,89 @@
                 transform: translateY(0) scale(1);
             }
         }
+
         .task-item {
-            animation: slide-up 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            animation: slide-up 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
         }
+
         .task-item:nth-child(1) {
-            animation-delay: 0.01s;
-        }
-        .task-item:nth-child(2) {
             animation-delay: 0.02s;
         }
-        .task-item:nth-child(3) {
-            animation-delay: 0.03s;
-        }
-        .task-item:nth-child(4) {
+        .task-item:nth-child(2) {
             animation-delay: 0.04s;
         }
-        .task-item:nth-child(5) {
-            animation-delay: 0.05s;
-        }
-        .task-item:nth-child(6) {
+        .task-item:nth-child(3) {
             animation-delay: 0.06s;
         }
-        .task-item:nth-child(7) {
-            animation-delay: 0.07s;
-        }
-        .task-item:nth-child(8) {
+        .task-item:nth-child(4) {
             animation-delay: 0.08s;
         }
-        .task-item:nth-child(9) {
-            animation-delay: 0.09s;
-        }
-        .task-item:nth-child(10) {
+        .task-item:nth-child(5) {
             animation-delay: 0.10s;
         }
-        .task-item:nth-child(11) {
-            animation-delay: 0.11s;
-        }
-        .task-item:nth-child(12) {
+        .task-item:nth-child(6) {
             animation-delay: 0.12s;
         }
-        .task-item:nth-child(13) {
-            animation-delay: 0.13s;
-        }
-        .task-item:nth-child(14) {
+        .task-item:nth-child(7) {
             animation-delay: 0.14s;
         }
-        .task-item:nth-child(15) {
-            animation-delay: 0.15s;
-        }
-        .task-item:nth-child(16) {
+        .task-item:nth-child(8) {
             animation-delay: 0.16s;
         }
-        .task-item:nth-child(17) {
-            animation-delay: 0.17s;
-        }
-        .task-item:nth-child(18) {
+        .task-item:nth-child(9) {
             animation-delay: 0.18s;
         }
-        .task-item:nth-child(19) {
-            animation-delay: 0.19s;
-        }
-        .task-item:nth-child(20) {
+        .task-item:nth-child(10) {
             animation-delay: 0.20s;
         }
-        .task-item:nth-child(21) {
-            animation-delay: 0.21s;
-        }
-        .task-item:nth-child(22) {
+        .task-item:nth-child(11) {
             animation-delay: 0.22s;
         }
-        .task-item:nth-child(23) {
-            animation-delay: 0.23s;
-        }
-        .task-item:nth-child(24) {
+        .task-item:nth-child(12) {
             animation-delay: 0.24s;
         }
-        .task-item:nth-child(25) {
-            animation-delay: 0.25s;
-        }
-        .task-item:nth-child(26) {
+        .task-item:nth-child(13) {
             animation-delay: 0.26s;
         }
-        .task-item:nth-child(27) {
-            animation-delay: 0.27s;
-        }
-        .task-item:nth-child(28) {
+        .task-item:nth-child(14) {
             animation-delay: 0.28s;
         }
-        .task-item:nth-child(29) {
-            animation-delay: 0.29s;
-        }
-        .task-item:nth-child(30) {
+        .task-item:nth-child(15) {
             animation-delay: 0.30s;
         }
-        .task-item:nth-child(31) {
-            animation-delay: 0.31s;
-        }
-        .task-item:nth-child(32) {
+        .task-item:nth-child(16) {
             animation-delay: 0.32s;
         }
-        .task-item:nth-child(33) {
-            animation-delay: 0.33s;
-        }
-        .task-item:nth-child(34) {
+        .task-item:nth-child(17) {
             animation-delay: 0.34s;
         }
-        .task-item:nth-child(35) {
-            animation-delay: 0.35s;
-        }
-        .task-item:nth-child(36) {
+        .task-item:nth-child(18) {
             animation-delay: 0.36s;
         }
-        .task-item:nth-child(37) {
-            animation-delay: 0.37s;
-        }
-        .task-item:nth-child(38) {
+        .task-item:nth-child(19) {
             animation-delay: 0.38s;
         }
-        .task-item:nth-child(39) {
-            animation-delay: 0.39s;
-        }
-        .task-item:nth-child(40) {
+        .task-item:nth-child(20) {
             animation-delay: 0.40s;
         }
-        .task-item:nth-child(41) {
-            animation-delay: 0.41s;
-        }
-        .task-item:nth-child(42) {
+        .task-item:nth-child(21) {
             animation-delay: 0.42s;
         }
-        .task-item:nth-child(43) {
-            animation-delay: 0.43s;
-        }
-        .task-item:nth-child(44) {
+        .task-item:nth-child(22) {
             animation-delay: 0.44s;
         }
-        .task-item:nth-child(45) {
-            animation-delay: 0.45s;
-        }
-        .task-item:nth-child(46) {
+        .task-item:nth-child(23) {
             animation-delay: 0.46s;
         }
-        .task-item:nth-child(47) {
-            animation-delay: 0.47s;
-        }
-        .task-item:nth-child(48) {
+        .task-item:nth-child(24) {
             animation-delay: 0.48s;
         }
-        .task-item:nth-child(49) {
-            animation-delay: 0.49s;
+
+        /* bouncy button press */
+        .btn-bounce:active:not(:disabled) {
+            animation: btn-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .task-item:nth-child(50) {
-            animation-delay: 0.50s;
-        }
+
         @keyframes btn-pop {
             0% {
                 transform: scale(0.92);
@@ -1054,6 +1174,8 @@
                 transform: scale(1);
             }
         }
+
+        /* shimmer for current task */
         .task-item.current::after {
             content: '';
             position: absolute;
@@ -1063,6 +1185,7 @@
             pointer-events: none;
             animation: shimmer 3s ease-in-out infinite;
         }
+
         @keyframes shimmer {
             0%,
             100% {
@@ -1088,15 +1211,16 @@
             </div>
             <div class="header-right">
                 <div class="live-clock">
-                    <span class="dot"></span>
-                    <span id="clockDisplay">12:12:57</span>
+                    <span class="dot"></span>Live
+                    <span id="clockDisplay">10:54:08</span>
                 </div>
                 <div class="stats">
-                    <span>📌 <span class="num" id="totalCount">50</span></span>
-                    <span>✅ <span class="num" id="doneCount">30</span></span>
-                    <span>⏳ <span class="num" id="pendingCount">19</span></span>
+                    <span>📌 <span class="num" id="totalCount">24</span></span>
+                    <span>✅ <span class="num" id="doneCount">10</span></span>
+                    <span>⏳ <span class="num" id="pendingCount">13</span></span>
                 </div>
                 <span class="lock-badge active" id="lockBadge">🔒</span>
+                <button class="save-status-btn" id="saveStatusBtn" type="button">📂 Connect file to autosave</button>
             </div>
         </header>
 
@@ -1104,9 +1228,9 @@
         <div class="progress-wrap">
             <span class="label">Progress</span>
             <div class="progress-track">
-                <div class="progress-fill" id="progressFill" style="width: 60%;"></div>
+                <div class="progress-fill" id="progressFill" style="width: 42%;"></div>
             </div>
-            <span class="progress-label" id="progressLabel">60%</span>
+            <span class="progress-label" id="progressLabel">42%</span>
         </div>
 
         <!-- ─── TASK LIST ─── -->
@@ -1119,7 +1243,7 @@
             <div id="taskList">
                             <div class="task-item " data-index="0" style="cursor: default;">
                                 <span class="index-badge">#1</span>
-                                <span class="task-title">Collect all previous-operation / legacy stock data</span>
+                                <span class="task-title">Analyze requirements</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1132,7 +1256,7 @@
                         
                             <div class="task-item " data-index="1" style="cursor: default;">
                                 <span class="index-badge">#2</span>
-                                <span class="task-title">Upload previous-operation stock into the system</span>
+                                <span class="task-title">Design database schema</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1145,7 +1269,7 @@
                         
                             <div class="task-item " data-index="2" style="cursor: default;">
                                 <span class="index-badge">#3</span>
-                                <span class="task-title">Review and clean legacy stock records</span>
+                                <span class="task-title">Set up Odoo development environment</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1158,7 +1282,7 @@
                         
                             <div class="task-item " data-index="3" style="cursor: default;">
                                 <span class="index-badge">#4</span>
-                                <span class="task-title">Compile existing trial balance data</span>
+                                <span class="task-title">Create base module structure</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1171,7 +1295,7 @@
                         
                             <div class="task-item " data-index="4" style="cursor: default;">
                                 <span class="index-badge">#5</span>
-                                <span class="task-title">Reconcile trial balance against available financial records</span>
+                                <span class="task-title">Implement user authentication</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1184,7 +1308,7 @@
                         
                             <div class="task-item " data-index="5" style="cursor: default;">
                                 <span class="index-badge">#6</span>
-                                <span class="task-title">Update trial balance to the agreed cut-off date</span>
+                                <span class="task-title">Build inventory model</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1197,7 +1321,7 @@
                         
                             <div class="task-item " data-index="6" style="cursor: default;">
                                 <span class="index-badge">#7</span>
-                                <span class="task-title">Compile historical purchase transactions</span>
+                                <span class="task-title">Create product views</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1210,7 +1334,7 @@
                         
                             <div class="task-item " data-index="7" style="cursor: default;">
                                 <span class="index-badge">#8</span>
-                                <span class="task-title">Verify purchase transactions against supporting records</span>
+                                <span class="task-title">Implement sales order flow</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1223,7 +1347,7 @@
                         
                             <div class="task-item " data-index="8" style="cursor: default;">
                                 <span class="index-badge">#9</span>
-                                <span class="task-title">Record / correct purchase transactions in Odoo</span>
+                                <span class="task-title">Add purchase order logic</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1236,7 +1360,7 @@
                         
                             <div class="task-item " data-index="9" style="cursor: default;">
                                 <span class="index-badge">#10</span>
-                                <span class="task-title">Complete initial stock and financial data cleanup</span>
+                                <span class="task-title">Build reporting dashboard</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
@@ -1247,11 +1371,11 @@
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="10" style="cursor: default;">
+                            <div class="task-item current" data-index="10" style="cursor: default;">
                                 <span class="index-badge">#11</span>
-                                <span class="task-title">Compile project data from January onward</span>
-                                <span class="task-status done">Done</span>
-                                
+                                <span class="task-title">Integrate payment gateway</span>
+                                <span class="task-status current">Current</span>
+                                <span class="current-badge">⭐ Current</span>
                                 <span class="task-actions">
                                     <button class="move-up" data-index="10" title="Move up" disabled="">⬆</button>
                                     <button class="move-down" data-index="10" title="Move down" disabled="">⬇</button>
@@ -1262,8 +1386,8 @@
                         
                             <div class="task-item " data-index="11" style="cursor: default;">
                                 <span class="index-badge">#12</span>
-                                <span class="task-title">Structure project information for BOM preparation</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Set up email notifications</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="11" title="Move up" disabled="">⬆</button>
@@ -1275,8 +1399,8 @@
                         
                             <div class="task-item " data-index="12" style="cursor: default;">
                                 <span class="index-badge">#13</span>
-                                <span class="task-title">Identify and categorize finished-goods items</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Implement multi-company support</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="12" title="Move up" disabled="">⬆</button>
@@ -1288,8 +1412,8 @@
                         
                             <div class="task-item " data-index="13" style="cursor: default;">
                                 <span class="index-badge">#14</span>
-                                <span class="task-title">Review existing product master data</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Create API endpoints</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="13" title="Move up" disabled="">⬆</button>
@@ -1301,8 +1425,8 @@
                         
                             <div class="task-item " data-index="14" style="cursor: default;">
                                 <span class="index-badge">#15</span>
-                                <span class="task-title">Compile BOM requirements for finished goods</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Build mobile app interface</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="14" title="Move up" disabled="">⬆</button>
@@ -1314,8 +1438,8 @@
                         
                             <div class="task-item " data-index="15" style="cursor: default;">
                                 <span class="index-badge">#16</span>
-                                <span class="task-title">Prepare BOM data for system upload</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Add warehouse management</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="15" title="Move up" disabled="">⬆</button>
@@ -1327,8 +1451,8 @@
                         
                             <div class="task-item " data-index="16" style="cursor: default;">
                                 <span class="index-badge">#17</span>
-                                <span class="task-title">Upload BOMs into Odoo</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Implement barcode scanning</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="16" title="Move up" disabled="">⬆</button>
@@ -1340,8 +1464,8 @@
                         
                             <div class="task-item " data-index="17" style="cursor: default;">
                                 <span class="index-badge">#18</span>
-                                <span class="task-title">Add material and production costing to BOMs</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Set up cron jobs</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="17" title="Move up" disabled="">⬆</button>
@@ -1353,8 +1477,8 @@
                         
                             <div class="task-item " data-index="18" style="cursor: default;">
                                 <span class="index-badge">#19</span>
-                                <span class="task-title">Verify BOM calculations against actual products</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Create backup strategy</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="18" title="Move up" disabled="">⬆</button>
@@ -1366,8 +1490,8 @@
                         
                             <div class="task-item " data-index="19" style="cursor: default;">
                                 <span class="index-badge">#20</span>
-                                <span class="task-title">Link stock, BOM and costing information</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">Performance optimization</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="19" title="Move up" disabled="">⬆</button>
@@ -1379,391 +1503,14 @@
                         
                             <div class="task-item " data-index="20" style="cursor: default;">
                                 <span class="index-badge">#21</span>
-                                <span class="task-title">Prepare six-month operational / costing data</span>
-                                <span class="task-status done">Done</span>
+                                <span class="task-title">User acceptance testing</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="20" title="Move up" disabled="">⬆</button>
                                     <button class="move-down" data-index="20" title="Move down" disabled="">⬇</button>
                                     <button class="set-current" data-index="20" title="Set as current" disabled="">🎯</button>
                                     <button class="delete-task danger" data-index="20" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="21" style="cursor: default;">
-                                <span class="index-badge">#22</span>
-                                <span class="task-title">Conduct six-month trend and variance analysis</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="21" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="21" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="21" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="21" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="22" style="cursor: default;">
-                                <span class="index-badge">#23</span>
-                                <span class="task-title">Review initial operational workflows internally</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="22" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="22" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="22" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="22" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="23" style="cursor: default;">
-                                <span class="index-badge">#24</span>
-                                <span class="task-title">Review HR access requirements by role</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="23" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="23" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="23" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="23" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="24" style="cursor: default;">
-                                <span class="index-badge">#25</span>
-                                <span class="task-title">Conduct initial CRM functionality testing</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="24" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="24" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="24" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="24" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="25" style="cursor: default;">
-                                <span class="index-badge">#26</span>
-                                <span class="task-title">Review and validate operational workflows</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="25" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="25" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="25" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="25" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="26" style="cursor: default;">
-                                <span class="index-badge">#27</span>
-                                <span class="task-title">Identify required workflow amendments</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="26" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="26" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="26" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="26" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="27" style="cursor: default;">
-                                <span class="index-badge">#28</span>
-                                <span class="task-title">Amend workflow following discussions with RESON</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="27" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="27" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="27" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="27" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="28" style="cursor: default;">
-                                <span class="index-badge">#29</span>
-                                <span class="task-title">Submit additional development requirements to RESON</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="28" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="28" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="28" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="28" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="29" style="cursor: default;">
-                                <span class="index-badge">#30</span>
-                                <span class="task-title">Begin preparation of realistic staging/testing environment</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="29" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="29" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="29" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="29" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item current" data-index="30" style="cursor: default;">
-                                <span class="index-badge">#31</span>
-                                <span class="task-title">Complete internal testing of amended workflow with RESON</span>
-                                <span class="task-status current">Current</span>
-                                <span class="current-badge">⭐ Current</span>
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="30" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="30" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="30" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="30" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="31" style="cursor: default;">
-                                <span class="index-badge">#32</span>
-                                <span class="task-title">Conduct final workflow review with RESON</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="31" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="31" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="31" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="31" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="32" style="cursor: default;">
-                                <span class="index-badge">#33</span>
-                                <span class="task-title">Close all remaining workflow amendments / development points</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="32" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="32" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="32" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="32" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="33" style="cursor: default;">
-                                <span class="index-badge">#34</span>
-                                <span class="task-title">Confirm staging environment reflects the final approved workflow</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="33" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="33" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="33" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="33" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="34" style="cursor: default;">
-                                <span class="index-badge">#35</span>
-                                <span class="task-title">Validate staging environment using realistic operational data</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="34" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="34" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="34" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="34" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="35" style="cursor: default;">
-                                <span class="index-badge">#36</span>
-                                <span class="task-title">Finalize HR role/access matrix</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="35" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="35" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="35" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="35" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="36" style="cursor: default;">
-                                <span class="index-badge">#37</span>
-                                <span class="task-title">Collect team-member email lists from all HODs</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="36" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="36" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="36" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="36" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="37" style="cursor: default;">
-                                <span class="index-badge">#38</span>
-                                <span class="task-title">Verify employee access to staging environment</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="37" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="37" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="37" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="37" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="38" style="cursor: default;">
-                                <span class="index-badge">#39</span>
-                                <span class="task-title">Finalize and release training schedule</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="38" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="38" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="38" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="38" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="39" style="cursor: default;">
-                                <span class="index-badge">#40</span>
-                                <span class="task-title">Train Lead Generators &amp; CS Team</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="39" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="39" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="39" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="39" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="40" style="cursor: default;">
-                                <span class="index-badge">#41</span>
-                                <span class="task-title">Train Designers, Design HOD &amp; Eissa Moosa</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="40" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="40" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="40" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="40" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="41" style="cursor: default;">
-                                <span class="index-badge">#42</span>
-                                <span class="task-title">Train Production HOD Team</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="41" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="41" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="41" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="41" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="42" style="cursor: default;">
-                                <span class="index-badge">#43</span>
-                                <span class="task-title">Conduct developer/consultant pretest across complete workflow</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="42" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="42" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="42" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="42" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="43" style="cursor: default;">
-                                <span class="index-badge">#44</span>
-                                <span class="task-title">Log and prioritize issues identified during pretest</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="43" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="43" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="43" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="43" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="44" style="cursor: default;">
-                                <span class="index-badge">#45</span>
-                                <span class="task-title">Resolve critical issues and retest affected workflows</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="44" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="44" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="44" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="44" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="45" style="cursor: default;">
-                                <span class="index-badge">#46</span>
-                                <span class="task-title">Confirm system readiness for production deployment</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="45" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="45" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="45" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="45" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="46" style="cursor: default;">
-                                <span class="index-badge">#47</span>
-                                <span class="task-title">Deploy finalized system to production environment</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="46" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="46" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="46" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="46" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="47" style="cursor: default;">
-                                <span class="index-badge">#48</span>
-                                <span class="task-title">Conduct live UAT with HODs and employees</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="47" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="47" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="47" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="47" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="48" style="cursor: default;">
-                                <span class="index-badge">#49</span>
-                                <span class="task-title">Resolve final UAT issues and obtain departmental confirmation</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="48" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="48" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="48" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="48" title="Delete" disabled="">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="49" style="cursor: default;">
-                                <span class="index-badge">#50</span>
-                                <span class="task-title">Final project review, HOD sign-off, system handover and project closure</span>
-                                <span class="task-status pending">Pending</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="49" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="49" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="49" title="Set as current" disabled="">🎯</button>
-                                    <button class="delete-task danger" data-index="49" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         </div>
@@ -1789,15 +1536,13 @@
                 <button class="btn btn-glass btn-sm" id="nextBtn" title="Move current forward">Next ➡</button>
             </div>
             <div class="btn-group">
-                <button class="btn btn-glass btn-sm" id="resetBtn" title="Reset to master plan">🔄 Reset</button>
-                <button class="btn btn-danger btn-sm" id="clearBtn" title="Delete all tasks (local)">🗑️ Clear</button>
-                <button class="btn btn-glass btn-sm" id="shareBtn" title="Share this exact task list">🔗 Share</button>
+                <button class="btn btn-danger btn-sm" id="clearBtn" title="Delete all tasks">🗑️ Clear</button>
             </div>
         </div>
 
     </div>
 
-    <!-- ─── FLOATING LOCK ─── -->
+    <!-- ─── FLOATING LOCK (100% transparent, clickable) ─── -->
     <div class="floating-lock" id="floatingLock" title="Toggle Lock (Ctrl+Shift+L)">
         <button class="btn btn-lock locked" id="lockBtn">
             <span class="lock-icon" id="floatingLockIcon">🔓</span>
@@ -1808,86 +1553,66 @@
     <!-- ─── TOAST ─── -->
     
 
+    <!-- ─── EMBEDDED DATA (this is the real save file — edits get written back in here) ─── -->
+    <script id="__APP_DATA__" type="application/json">{"tasks": [{"id": 1, "title": "Collect all previous-operation / legacy stock data", "status": "done"}, {"id": 2, "title": "Upload previous-operation stock into the system", "status": "done"}, {"id": 3, "title": "Review and clean legacy stock records", "status": "done"}, {"id": 4, "title": "Compile existing trial balance data", "status": "done"}, {"id": 5, "title": "Reconcile trial balance against available financial records", "status": "done"}, {"id": 6, "title": "Update trial balance to the agreed cut-off date", "status": "done"}, {"id": 7, "title": "Compile historical purchase transactions", "status": "done"}, {"id": 8, "title": "Verify purchase transactions against supporting records", "status": "done"}, {"id": 9, "title": "Record / correct purchase transactions in Odoo", "status": "done"}, {"id": 10, "title": "Complete initial stock and financial data cleanup", "status": "done"}, {"id": 11, "title": "Compile project data from January onward", "status": "done"}, {"id": 12, "title": "Structure project information for BOM preparation", "status": "done"}, {"id": 13, "title": "Identify and categorize finished-goods items", "status": "done"}, {"id": 14, "title": "Review existing product master data", "status": "done"}, {"id": 15, "title": "Compile BOM requirements for finished goods", "status": "done"}, {"id": 16, "title": "Prepare BOM data for system upload", "status": "done"}, {"id": 17, "title": "Upload BOMs into Odoo", "status": "done"}, {"id": 18, "title": "Add material and production costing to BOMs", "status": "done"}, {"id": 19, "title": "Verify BOM calculations against actual products", "status": "done"}, {"id": 20, "title": "Link stock, BOM and costing information", "status": "done"}, {"id": 21, "title": "Prepare six-month operational / costing data", "status": "done"}, {"id": 22, "title": "Conduct six-month trend and variance analysis", "status": "done"}, {"id": 23, "title": "Review initial operational workflows internally", "status": "done"}, {"id": 24, "title": "Review HR access requirements by role", "status": "done"}, {"id": 25, "title": "Conduct initial CRM functionality testing", "status": "done"}, {"id": 26, "title": "Review and validate operational workflows", "status": "done"}, {"id": 27, "title": "Identify required workflow amendments", "status": "done"}, {"id": 28, "title": "Amend workflow following discussions with RESON", "status": "done"}, {"id": 29, "title": "Submit additional development requirements to RESON", "status": "done"}, {"id": 30, "title": "Begin preparation of realistic staging/testing environment", "status": "done"}, {"id": 31, "title": "Complete internal testing of amended workflow with RESON", "status": "current"}, {"id": 32, "title": "Conduct final workflow review with RESON", "status": "pending"}, {"id": 33, "title": "Close all remaining workflow amendments / development points", "status": "pending"}, {"id": 34, "title": "Confirm staging environment reflects the final approved workflow", "status": "pending"}, {"id": 35, "title": "Validate staging environment using realistic operational data", "status": "pending"}, {"id": 36, "title": "Finalize HR role/access matrix", "status": "pending"}, {"id": 37, "title": "Collect team-member email lists from all HODs", "status": "pending"}, {"id": 38, "title": "Verify employee access to staging environment", "status": "pending"}, {"id": 39, "title": "Finalize and release training schedule", "status": "pending"}, {"id": 40, "title": "Train Lead Generators & CS Team", "status": "pending"}, {"id": 41, "title": "Train Designers, Design HOD & Eissa Moosa", "status": "pending"}, {"id": 42, "title": "Train Production HOD Team", "status": "pending"}, {"id": 43, "title": "Conduct developer/consultant pretest across complete workflow", "status": "pending"}, {"id": 44, "title": "Log and prioritize issues identified during pretest", "status": "pending"}, {"id": 45, "title": "Resolve critical issues and retest affected workflows", "status": "pending"}, {"id": 46, "title": "Confirm system readiness for production deployment", "status": "pending"}, {"id": 47, "title": "Deploy finalized system to production environment", "status": "pending"}, {"id": 48, "title": "Conduct live UAT with HODs and employees", "status": "pending"}, {"id": 49, "title": "Resolve final UAT issues and obtain departmental confirmation", "status": "pending"}, {"id": 50, "title": "Final project review, HOD sign-off, system handover and project closure", "status": "pending"}], "currentIndex": 30, "isLocked": true}</script>
+
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  HARD‑CODED MASTER PLAN — edit this array to change tasks
+        //  DATA LAYER
+        //  Source of truth = the JSON inside the __APP_DATA__
+        //  <script> tag above. Every change re-writes that tag
+        //  and (when a file is connected) saves the whole HTML
+        //  file back to disk, so the data travels with the file.
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        const MASTER_PLAN = [
-            { id: 1, title: 'Collect all previous-operation / legacy stock data', status: 'done' },
-            { id: 2, title: 'Upload previous-operation stock into the system', status: 'done' },
-            { id: 3, title: 'Review and clean legacy stock records', status: 'done' },
-            { id: 4, title: 'Compile existing trial balance data', status: 'done' },
-            { id: 5, title: 'Reconcile trial balance against available financial records', status: 'done' },
-            { id: 6, title: 'Update trial balance to the agreed cut-off date', status: 'done' },
-            { id: 7, title: 'Compile historical purchase transactions', status: 'done' },
-            { id: 8, title: 'Verify purchase transactions against supporting records', status: 'done' },
-            { id: 9, title: 'Record / correct purchase transactions in Odoo', status: 'done' },
-            { id: 10, title: 'Complete initial stock and financial data cleanup', status: 'done' },
-            { id: 11, title: 'Compile project data from January onward', status: 'done' },
-            { id: 12, title: 'Structure project information for BOM preparation', status: 'done' },
-            { id: 13, title: 'Identify and categorize finished-goods items', status: 'done' },
-            { id: 14, title: 'Review existing product master data', status: 'done' },
-            { id: 15, title: 'Compile BOM requirements for finished goods', status: 'done' },
-            { id: 16, title: 'Prepare BOM data for system upload', status: 'done' },
-            { id: 17, title: 'Upload BOMs into Odoo', status: 'done' },
-            { id: 18, title: 'Add material and production costing to BOMs', status: 'done' },
-            { id: 19, title: 'Verify BOM calculations against actual products', status: 'done' },
-            { id: 20, title: 'Link stock, BOM and costing information', status: 'done' },
-            { id: 21, title: 'Prepare six-month operational / costing data', status: 'done' },
-            { id: 22, title: 'Conduct six-month trend and variance analysis', status: 'done' },
-            { id: 23, title: 'Review initial operational workflows internally', status: 'done' },
-            { id: 24, title: 'Review HR access requirements by role', status: 'done' },
-            { id: 25, title: 'Conduct initial CRM functionality testing', status: 'done' },
-            { id: 26, title: 'Review and validate operational workflows', status: 'done' },
-            { id: 27, title: 'Identify required workflow amendments', status: 'done' },
-            { id: 28, title: 'Amend workflow following discussions with RESON', status: 'done' },
-            { id: 29, title: 'Submit additional development requirements to RESON', status: 'done' },
-            { id: 30, title: 'Begin preparation of realistic staging/testing environment', status: 'done' },
-            { id: 31, title: 'Complete internal testing of amended workflow with RESON', status: 'current' },
-            { id: 32, title: 'Conduct final workflow review with RESON', status: 'pending' },
-            { id: 33, title: 'Close all remaining workflow amendments / development points', status: 'pending' },
-            { id: 34, title: 'Confirm staging environment reflects the final approved workflow', status: 'pending' },
-            { id: 35, title: 'Validate staging environment using realistic operational data', status: 'pending' },
-            { id: 36, title: 'Finalize HR role/access matrix', status: 'pending' },
-            { id: 37, title: 'Collect team-member email lists from all HODs', status: 'pending' },
-            { id: 38, title: 'Verify employee access to staging environment', status: 'pending' },
-            { id: 39, title: 'Finalize and release training schedule', status: 'pending' },
-            { id: 40, title: 'Train Lead Generators & CS Team', status: 'pending' },
-            { id: 41, title: 'Train Designers, Design HOD & Eissa Moosa', status: 'pending' },
-            { id: 42, title: 'Train Production HOD Team', status: 'pending' },
-            { id: 43, title: 'Conduct developer/consultant pretest across complete workflow', status: 'pending' },
-            { id: 44, title: 'Log and prioritize issues identified during pretest', status: 'pending' },
-            { id: 45, title: 'Resolve critical issues and retest affected workflows', status: 'pending' },
-            { id: 46, title: 'Confirm system readiness for production deployment', status: 'pending' },
-            { id: 47, title: 'Deploy finalized system to production environment', status: 'pending' },
-            { id: 48, title: 'Conduct live UAT with HODs and employees', status: 'pending' },
-            { id: 49, title: 'Resolve final UAT issues and obtain departmental confirmation', status: 'pending' },
-            { id: 50, title: 'Final project review, HOD sign-off, system handover and project closure', status: 'pending' },
-        ];
-
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  STATE
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        const STORAGE_KEY = 'odoo_tracker_data';
+        const LOCK_KEY = 'odoo_tracker_locked';
+        const DATA_TAG_ID = '__APP_DATA__';
+        const DB_NAME = 'odoo_tracker_fs';
+        const DB_STORE = 'handles';
 
         let tasks = [];
         let currentIndex = 0;
         let isLocked = false;
 
-        const STORAGE_KEY = 'odoo_tracker_data';
-        const LOCK_KEY = 'odoo_tracker_locked';
+        let fileHandle = null;       // FileSystemFileHandle for this .html file, once connected
+        let fileConnected = false;   // true once we have write permission and can autosave
+        let writeInFlight = false;
+        let writeQueued = false;
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  LOAD / SAVE
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        function readEmbeddedData() {
+            try {
+                const tag = document.getElementById(DATA_TAG_ID);
+                if (!tag) return null;
+                const raw = tag.textContent.trim();
+                if (!raw) return null;
+                return JSON.parse(raw);
+            } catch (_) { return null; }
+        }
+
+        function writeEmbeddedData() {
+            const tag = document.getElementById(DATA_TAG_ID);
+            if (tag) tag.textContent = JSON.stringify({ tasks, currentIndex, isLocked });
+        }
 
         function loadState() {
-            // Lock state
+            // 1. The data baked into this HTML file is the real source of truth.
+            const embedded = readEmbeddedData();
+            if (embedded) {
+                tasks = embedded.tasks || [];
+                currentIndex = embedded.currentIndex ?? 0;
+                isLocked = !!embedded.isLocked;
+                if (tasks.length === 0) currentIndex = 0;
+                if (currentIndex >= tasks.length) currentIndex = Math.max(0, tasks.length - 1);
+                return;
+            }
+
+            // 2. Fall back to this browser's local cache (older files without embedded data).
             try {
-                isLocked = localStorage.getItem(LOCK_KEY) === 'true';
+                const lockRaw = localStorage.getItem(LOCK_KEY);
+                isLocked = lockRaw === 'true';
             } catch (_) { isLocked = false; }
 
-            // Tasks: try localStorage first, then fallback to MASTER_PLAN
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (raw) {
@@ -1900,82 +1625,177 @@
                 }
             } catch (_) { /* fall through */ }
 
-            // First load: use the master plan
-            tasks = JSON.parse(JSON.stringify(MASTER_PLAN));
-            currentIndex = 30; // task #31 is 'current'
-            saveTasks();
+            // 3. Nothing saved anywhere — start empty. No sample data.
+            tasks = [];
+            currentIndex = 0;
         }
 
-        function saveTasks() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks, currentIndex }));
+        // Persist every change: browser cache (instant safety net) + the file itself.
+        function persistState() {
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ tasks, currentIndex })); } catch (_) {}
+            try { localStorage.setItem(LOCK_KEY, String(isLocked)); } catch (_) {}
+            writeEmbeddedData();
+            queueFileWrite();
         }
 
-        function saveLockState() {
-            localStorage.setItem(LOCK_KEY, String(isLocked));
+        function saveTasks() { persistState(); }
+        function saveLockState() { persistState(); }
+
+        // ── IndexedDB: remember which file we're connected to, across reloads ──
+        function idbOpen() {
+            return new Promise((resolve, reject) => {
+                const req = indexedDB.open(DB_NAME, 1);
+                req.onupgradeneeded = () => req.result.createObjectStore(DB_STORE);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+        async function idbSet(key, val) {
+            const db = await idbOpen();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(DB_STORE, 'readwrite');
+                tx.objectStore(DB_STORE).put(val, key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+        async function idbGet(key) {
+            const db = await idbOpen();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(DB_STORE, 'readonly');
+                const req = tx.objectStore(DB_STORE).get(key);
+                req.onsuccess = () => resolve(req.result || null);
+                req.onerror = () => reject(req.error);
+            });
         }
 
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  SHARE (encode current state into URL)
-        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-        function encodeData(data) {
-            const json = JSON.stringify(data);
-            return btoa(unescape(encodeURIComponent(json)));
+        // ── Writing the whole page back to disk ──
+        async function writeToFile() {
+            if (!fileHandle) return;
+            writeEmbeddedData();
+            const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const writable = await fileHandle.createWritable();
+            await writable.write(html);
+            await writable.close();
         }
 
-        function decodeData(encoded) {
-            try {
-                const json = decodeURIComponent(escape(atob(encoded)));
-                return JSON.parse(json);
-            } catch (_) { return null; }
+        function queueFileWrite() {
+            if (!fileConnected) return;
+            if (writeInFlight) { writeQueued = true; return; }
+            writeInFlight = true;
+            writeToFile()
+                .catch((err) => {
+                    console.error('Autosave to file failed:', err);
+                    fileConnected = false;
+                    updateSaveUI();
+                    showToast('⚠️ Lost the file connection — click to reconnect.', 'error');
+                })
+                .finally(() => {
+                    writeInFlight = false;
+                    if (writeQueued) { writeQueued = false; queueFileWrite(); }
+                });
         }
 
-        function shareCurrentData() {
-            const data = { tasks, currentIndex };
-            const encoded = encodeData(data);
-            const url = window.location.origin + window.location.pathname + '#data=' + encoded;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(url).then(() => {
-                    showToast('🔗 Share link copied to clipboard!', 'success');
-                }).catch(() => fallbackCopy(url));
-            } else {
-                fallbackCopy(url);
+        // ── Connecting / reconnecting to this HTML file on disk ──
+        async function connectFile() {
+            if (!('showOpenFilePicker' in window)) {
+                downloadHtml();
+                return;
             }
-        }
-
-        function fallbackCopy(text) {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.opacity = '0';
-            document.body.appendChild(ta);
-            ta.select();
             try {
-                document.execCommand('copy');
-                showToast('🔗 Share link copied to clipboard!', 'success');
-            } catch (_) {
-                showToast('Could not copy. Please copy this URL manually: ' + text, 'info');
-            }
-            document.body.removeChild(ta);
-        }
-
-        // Check URL hash on load
-        function loadFromHash() {
-            const hash = window.location.hash;
-            if (hash.startsWith('#data=')) {
-                const encoded = hash.substring(6);
-                const decoded = decodeData(encoded);
-                if (decoded && decoded.tasks && Array.isArray(decoded.tasks)) {
-                    tasks = decoded.tasks;
-                    currentIndex = decoded.currentIndex ?? 0;
-                    if (currentIndex >= tasks.length) currentIndex = Math.max(0, tasks.length - 1);
-                    saveTasks();
-                    window.history.replaceState(null, '', window.location.pathname + window.location.search);
-                    showToast('📥 Shared task list loaded!', 'success');
-                    return true;
+                const [handle] = await window.showOpenFilePicker({
+                    types: [{ description: 'HTML file', accept: { 'text/html': ['.html'] } }],
+                    excludeAcceptAllOption: false,
+                    multiple: false,
+                });
+                const perm = await handle.requestPermission({ mode: 'readwrite' });
+                if (perm !== 'granted') {
+                    showToast('Permission denied — autosave not enabled.', 'error');
+                    return;
                 }
+                fileHandle = handle;
+                fileConnected = true;
+                try { await idbSet('fileHandle', handle); } catch (_) {}
+                updateSaveUI();
+                showToast('💾 Connected — every edit now saves straight into this file.', 'success');
+                queueFileWrite();
+            } catch (err) {
+                if (err && err.name !== 'AbortError') console.error(err);
             }
-            return false;
+        }
+
+        async function reconnectPermission() {
+            if (!fileHandle) return connectFile();
+            try {
+                const perm = await fileHandle.requestPermission({ mode: 'readwrite' });
+                if (perm === 'granted') {
+                    fileConnected = true;
+                    updateSaveUI();
+                    showToast('💾 Autosave re-enabled.', 'success');
+                    queueFileWrite();
+                } else {
+                    showToast('Permission denied.', 'error');
+                }
+            } catch (_) { connectFile(); }
+        }
+
+        async function tryAutoReconnect() {
+            if (!('indexedDB' in window) || !('showOpenFilePicker' in window)) {
+                updateSaveUI();
+                return;
+            }
+            try {
+                const handle = await idbGet('fileHandle');
+                if (!handle) { updateSaveUI(); return; }
+                fileHandle = handle;
+                const perm = await handle.queryPermission({ mode: 'readwrite' });
+                fileConnected = (perm === 'granted');
+            } catch (_) { /* ignore */ }
+            updateSaveUI();
+        }
+
+        // ── Fallback for browsers without the File System Access API (Firefox/Safari) ──
+        function downloadHtml() {
+            writeEmbeddedData();
+            const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'odoo-task-tracker.html';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            showToast('⬇️ Downloaded — replace your old file with this one to keep your edits.', 'info');
+        }
+
+        function updateSaveUI() {
+            const btn = document.getElementById('saveStatusBtn');
+            if (!btn) return;
+            btn.classList.remove('connected', 'needs-attention');
+
+            if (!('showOpenFilePicker' in window)) {
+                btn.textContent = '⬇️ Download to save';
+                btn.title = "This browser can't autosave to disk — download the updated file after editing and replace the old one.";
+                btn.onclick = downloadHtml;
+                return;
+            }
+            if (fileConnected) {
+                btn.textContent = '💾 Autosaving to file';
+                btn.title = 'Every edit is being written straight into this HTML file.';
+                btn.classList.add('connected');
+                btn.onclick = downloadHtml; // still allow a manual extra copy
+            } else if (fileHandle) {
+                btn.textContent = '🔌 Reconnect to autosave';
+                btn.title = 'Click to re-grant permission and resume saving edits into the file.';
+                btn.classList.add('needs-attention');
+                btn.onclick = reconnectPermission;
+            } else {
+                btn.textContent = '📂 Connect file to autosave';
+                btn.title = 'Select this HTML file once so edits save straight into it.';
+                btn.onclick = connectFile;
+            }
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1986,6 +1806,7 @@
             const container = document.getElementById('taskList');
             const empty = document.getElementById('emptyState');
 
+            // Clamp currentIndex
             if (tasks.length === 0) {
                 container.innerHTML = '';
                 empty.classList.remove('hidden');
@@ -2000,23 +1821,33 @@
             if (currentIndex >= tasks.length) currentIndex = tasks.length - 1;
             if (currentIndex < 0) currentIndex = 0;
 
+            // Determine range: 10 before, current, 10 after
+            const beforeCount = 10;
+            const afterCount = 10;
+            const start = Math.max(0, currentIndex - beforeCount);
+            const end = Math.min(tasks.length, currentIndex + afterCount + 1);
+            const visible = tasks.slice(start, end);
+
             let html = '';
-            tasks.forEach((task, idx) => {
-                const isCurrent = idx === currentIndex;
+            let offset = start;
+
+            visible.forEach((task, idx) => {
+                const globalIdx = offset + idx;
+                const isCurrent = globalIdx === currentIndex;
                 const statusLabel = task.status.charAt(0).toUpperCase() + task.status.slice(1);
                 const statusClass = task.status;
 
                 html += `
-                            <div class="task-item ${isCurrent ? 'current' : ''}" data-index="${idx}">
-                                <span class="index-badge">#${idx + 1}</span>
+                            <div class="task-item ${isCurrent ? 'current' : ''}" data-index="${globalIdx}">
+                                <span class="index-badge">#${globalIdx + 1}</span>
                                 <span class="task-title">${escapeHtml(task.title)}</span>
                                 <span class="task-status ${statusClass}">${statusLabel}</span>
                                 ${isCurrent ? '<span class="current-badge">⭐ Current</span>' : ''}
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="${idx}" title="Move up" ${idx === 0 ? 'disabled' : ''}>⬆</button>
-                                    <button class="move-down" data-index="${idx}" title="Move down" ${idx === tasks.length - 1 ? 'disabled' : ''}>⬇</button>
-                                    <button class="set-current" data-index="${idx}" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="${idx}" title="Delete">✕</button>
+                                    <button class="move-up" data-index="${globalIdx}" title="Move up" ${globalIdx === 0 ? 'disabled' : ''}>⬆</button>
+                                    <button class="move-down" data-index="${globalIdx}" title="Move down" ${globalIdx === tasks.length - 1 ? 'disabled' : ''}>⬇</button>
+                                    <button class="set-current" data-index="${globalIdx}" title="Set as current">🎯</button>
+                                    <button class="delete-task danger" data-index="${globalIdx}" title="Delete">✕</button>
                                 </span>
                             </div>
                         `;
@@ -2024,6 +1855,7 @@
 
             container.innerHTML = html;
 
+            // Attach event listeners (only if not locked)
             if (!isLocked) {
                 container.querySelectorAll('.move-up').forEach(btn => {
                     btn.addEventListener('click', (e) => {
@@ -2057,6 +1889,7 @@
                     });
                 });
 
+                // Click on task row to set as current (except when clicking buttons)
                 container.querySelectorAll('.task-item').forEach(item => {
                     item.addEventListener('click', (e) => {
                         if (e.target.closest('.task-actions')) return;
@@ -2067,8 +1900,14 @@
                     });
                 });
             } else {
-                container.querySelectorAll('.task-actions button').forEach(btn => { btn.disabled = true; });
-                container.querySelectorAll('.task-item').forEach(item => { item.style.cursor = 'default'; });
+                // Locked: disable all interactive elements inside task-actions
+                container.querySelectorAll('.task-actions button').forEach(btn => {
+                    btn.disabled = true;
+                });
+                // Remove click handler from task items
+                container.querySelectorAll('.task-item').forEach(item => {
+                    item.style.cursor = 'default';
+                });
             }
 
             updateStats();
@@ -2076,7 +1915,11 @@
             updateControls();
             updateLockUI();
             saveTasks();
+
+            // Apply lock class to app
             document.getElementById('app').classList.toggle('locked', isLocked);
+
+            // ── ALWAYS CENTER THE CURRENT TASK ──
             scrollToCurrent();
         }
 
@@ -2113,10 +1956,16 @@
         }
 
         function updateControls() {
+            // No need to disable controls when locked because they are hidden by CSS.
+            // But we keep this for when unlocked.
             const hasTasks = tasks.length > 0;
-            document.getElementById('prevBtn').disabled = !hasTasks || currentIndex <= 0;
-            document.getElementById('nextBtn').disabled = !hasTasks || currentIndex >= tasks.length - 1;
-            document.getElementById('markDoneBtn').disabled = !hasTasks || tasks[currentIndex]?.status === 'done';
+            const prev = document.getElementById('prevBtn');
+            const next = document.getElementById('nextBtn');
+            const markDone = document.getElementById('markDoneBtn');
+
+            prev.disabled = !hasTasks || currentIndex <= 0;
+            next.disabled = !hasTasks || currentIndex >= tasks.length - 1;
+            markDone.disabled = !hasTasks || tasks[currentIndex]?.status === 'done';
         }
 
         function updateLockUI() {
@@ -2139,14 +1988,21 @@
                 btn.classList.remove('locked');
             }
             document.getElementById('app').classList.toggle('locked', isLocked);
+
+            // Disable add row (hidden by CSS anyway, but for safety)
             document.getElementById('newTaskInput').disabled = isLocked;
             document.getElementById('newTaskStatus').disabled = isLocked;
             document.getElementById('addTaskBtn').disabled = isLocked;
+
+            // Hide the autosave/connect-file control while locked (view-only mode)
+            const saveBtn = document.getElementById('saveStatusBtn');
+            if (saveBtn) saveBtn.style.display = isLocked ? 'none' : '';
+
             updateControls();
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        //  ACTIONS
+        //  ACTIONS (guarded by lock)
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function guard() {
@@ -2160,6 +2016,9 @@
         function setCurrent(idx) {
             if (!guard()) return;
             if (idx < 0 || idx >= tasks.length) return;
+            if (tasks[idx].status === 'done') {
+                showToast('This task is already done. You can still set it as current.', 'info');
+            }
             tasks.forEach(t => { if (t.status === 'current') t.status = 'pending'; });
             tasks[idx].status = 'current';
             currentIndex = idx;
@@ -2205,7 +2064,10 @@
         function addTask(title, status = 'pending') {
             if (!guard()) return;
             const trimmed = title.trim();
-            if (!trimmed) { showToast('Please enter a task title.', 'error'); return; }
+            if (!trimmed) {
+                showToast('Please enter a task title.', 'error');
+                return;
+            }
             const maxId = tasks.reduce((max, t) => Math.max(max, t.id), 0);
             const newTask = { id: maxId + 1, title: trimmed, status: status };
             if (status === 'current') {
@@ -2237,7 +2099,10 @@
                 return;
             }
             const task = tasks[currentIndex];
-            if (task.status === 'done') { showToast('Already done.', 'info'); return; }
+            if (task.status === 'done') {
+                showToast('Already done.', 'info');
+                return;
+            }
             task.status = 'done';
 
             let nextIdx = -1;
@@ -2279,15 +2144,6 @@
             showToast(`➡️ Moved to: "${tasks[currentIndex].title}"`, 'info');
         }
 
-        function resetToMaster() {
-            if (!guard()) return;
-            if (tasks.length > 0 && !confirm('Reset to the master 50‑step plan? Your local changes will be lost.')) return;
-            tasks = JSON.parse(JSON.stringify(MASTER_PLAN));
-            currentIndex = 30;
-            render();
-            showToast('🔄 Reset to master plan.', 'info');
-        }
-
         function clearAllTasks() {
             if (!guard()) return;
             if (tasks.length === 0) { showToast('No tasks to clear.', 'info'); return; }
@@ -2302,7 +2158,7 @@
             isLocked = !isLocked;
             saveLockState();
             render();
-            showToast(isLocked ? '🔒 Locked' : '🔓 Unlocked', 'info');
+            showToast(isLocked ? '🔒 Locked — editing disabled' : '🔓 Unlocked — editing enabled', 'info');
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2329,12 +2185,16 @@
             }, 2800);
         }
 
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  CLOCK
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
         function updateClock() {
             const now = new Date();
-            document.getElementById('clockDisplay').textContent =
-                String(now.getHours()).padStart(2, '0') + ':' +
-                String(now.getMinutes()).padStart(2, '0') + ':' +
-                String(now.getSeconds()).padStart(2, '0');
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clockDisplay').textContent = `${h}:${m}:${s}`;
         }
 
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2342,13 +2202,8 @@
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         function init() {
-            // Load from URL hash first (if shared link)
-            const loadedFromHash = loadFromHash();
-
-            // If not loaded from hash, load from localStorage / default
-            if (!loadedFromHash) {
-                loadState();
-            }
+            loadState();
+            tryAutoReconnect();
 
             // Ensure there's a current task
             if (tasks.length > 0) {
@@ -2383,7 +2238,8 @@
             updateClock();
             setInterval(updateClock, 1000);
 
-            // ── Event bindings ──
+            // ── event bindings ──
+
             document.getElementById('addTaskBtn').addEventListener('click', () => {
                 const input = document.getElementById('newTaskInput');
                 const status = document.getElementById('newTaskStatus').value;
@@ -2391,25 +2247,29 @@
             });
 
             document.getElementById('newTaskInput').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') document.getElementById('addTaskBtn').click();
+                if (e.key === 'Enter') {
+                    document.getElementById('addTaskBtn').click();
+                }
             });
 
             document.getElementById('prevBtn').addEventListener('click', () => moveCurrent(-1));
             document.getElementById('nextBtn').addEventListener('click', () => moveCurrent(1));
             document.getElementById('markDoneBtn').addEventListener('click', markCurrentDone);
-            document.getElementById('resetBtn').addEventListener('click', resetToMaster);
             document.getElementById('clearBtn').addEventListener('click', clearAllTasks);
             document.getElementById('lockBtn').addEventListener('click', toggleLock);
-            document.getElementById('shareBtn').addEventListener('click', shareCurrentData);
 
             // Keyboard shortcuts
             document.addEventListener('keydown', (e) => {
+                // Ctrl+Shift+L to toggle lock (always works, even when locked)
                 if (e.ctrlKey && e.shiftKey && (e.key === 'L' || e.key === 'l')) {
                     e.preventDefault();
                     toggleLock();
                     return;
                 }
+
+                // Only proceed if not locked
                 if (isLocked) return;
+
                 if (e.ctrlKey && e.key === 'ArrowLeft') {
                     e.preventDefault();
                     moveCurrent(-1);
@@ -2422,12 +2282,11 @@
                 }
             });
 
-            showToast('📋 Static tasks – edit MASTER_PLAN in the code to update', 'info');
+            showToast('🚀 Ctrl+←/→ navigate · Ctrl+Enter done · Ctrl+Shift+L lock', 'info');
         }
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
-
 
 
 </body></html>
