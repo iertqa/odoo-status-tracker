@@ -1078,7 +1078,7 @@
 </head>
 <body>
 
-    <div class="app" id="app">
+    <div class="app locked" id="app">
 
         <!-- ─── HEADER ─── -->
         <header class="header">
@@ -1089,14 +1089,14 @@
             <div class="header-right">
                 <div class="live-clock">
                     <span class="dot"></span>
-                    <span id="clockDisplay">12:10:26</span>
+                    <span id="clockDisplay">12:12:57</span>
                 </div>
                 <div class="stats">
-                    <span>📌 <span class="num" id="totalCount">31</span></span>
-                    <span>✅ <span class="num" id="doneCount">21</span></span>
-                    <span>⏳ <span class="num" id="pendingCount">9</span></span>
+                    <span>📌 <span class="num" id="totalCount">50</span></span>
+                    <span>✅ <span class="num" id="doneCount">30</span></span>
+                    <span>⏳ <span class="num" id="pendingCount">19</span></span>
                 </div>
-                <span class="lock-badge" id="lockBadge">🔓</span>
+                <span class="lock-badge active" id="lockBadge">🔒</span>
             </div>
         </header>
 
@@ -1104,9 +1104,9 @@
         <div class="progress-wrap">
             <span class="label">Progress</span>
             <div class="progress-track">
-                <div class="progress-fill" id="progressFill" style="width: 68%;"></div>
+                <div class="progress-fill" id="progressFill" style="width: 60%;"></div>
             </div>
-            <span class="progress-label" id="progressLabel">68%</span>
+            <span class="progress-label" id="progressLabel">60%</span>
         </div>
 
         <!-- ─── TASK LIST ─── -->
@@ -1117,406 +1117,653 @@
                 <p>Add your first task below to get started.</p>
             </div>
             <div id="taskList">
-                            <div class="task-item " data-index="0">
+                            <div class="task-item " data-index="0" style="cursor: default;">
                                 <span class="index-badge">#1</span>
                                 <span class="task-title">Collect all previous-operation / legacy stock data</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
                                     <button class="move-up" data-index="0" title="Move up" disabled="">⬆</button>
-                                    <button class="move-down" data-index="0" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="0" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="0" title="Delete">✕</button>
+                                    <button class="move-down" data-index="0" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="0" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="0" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="1">
+                            <div class="task-item " data-index="1" style="cursor: default;">
                                 <span class="index-badge">#2</span>
                                 <span class="task-title">Upload previous-operation stock into the system</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="1" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="1" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="1" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="1" title="Delete">✕</button>
+                                    <button class="move-up" data-index="1" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="1" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="1" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="1" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="2">
+                            <div class="task-item " data-index="2" style="cursor: default;">
                                 <span class="index-badge">#3</span>
                                 <span class="task-title">Review and clean legacy stock records</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="2" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="2" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="2" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="2" title="Delete">✕</button>
+                                    <button class="move-up" data-index="2" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="2" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="2" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="2" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="3">
+                            <div class="task-item " data-index="3" style="cursor: default;">
                                 <span class="index-badge">#4</span>
+                                <span class="task-title">Compile existing trial balance data</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="3" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="3" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="3" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="3" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="4" style="cursor: default;">
+                                <span class="index-badge">#5</span>
+                                <span class="task-title">Reconcile trial balance against available financial records</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="4" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="4" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="4" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="4" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="5" style="cursor: default;">
+                                <span class="index-badge">#6</span>
                                 <span class="task-title">Update trial balance to the agreed cut-off date</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="3" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="3" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="3" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="3" title="Delete">✕</button>
+                                    <button class="move-up" data-index="5" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="5" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="5" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="5" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="4">
-                                <span class="index-badge">#5</span>
+                            <div class="task-item " data-index="6" style="cursor: default;">
+                                <span class="index-badge">#7</span>
                                 <span class="task-title">Compile historical purchase transactions</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="4" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="4" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="4" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="4" title="Delete">✕</button>
+                                    <button class="move-up" data-index="6" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="6" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="6" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="6" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="5">
-                                <span class="index-badge">#6</span>
+                            <div class="task-item " data-index="7" style="cursor: default;">
+                                <span class="index-badge">#8</span>
                                 <span class="task-title">Verify purchase transactions against supporting records</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="5" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="5" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="5" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="5" title="Delete">✕</button>
+                                    <button class="move-up" data-index="7" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="7" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="7" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="7" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="6">
-                                <span class="index-badge">#7</span>
+                            <div class="task-item " data-index="8" style="cursor: default;">
+                                <span class="index-badge">#9</span>
                                 <span class="task-title">Record / correct purchase transactions in Odoo</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="6" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="6" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="6" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="6" title="Delete">✕</button>
+                                    <button class="move-up" data-index="8" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="8" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="8" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="8" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="7">
-                                <span class="index-badge">#8</span>
+                            <div class="task-item " data-index="9" style="cursor: default;">
+                                <span class="index-badge">#10</span>
                                 <span class="task-title">Complete initial stock and financial data cleanup</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="7" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="7" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="7" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="7" title="Delete">✕</button>
+                                    <button class="move-up" data-index="9" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="9" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="9" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="9" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="8">
-                                <span class="index-badge">#9</span>
+                            <div class="task-item " data-index="10" style="cursor: default;">
+                                <span class="index-badge">#11</span>
                                 <span class="task-title">Compile project data from January onward</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="8" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="8" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="8" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="8" title="Delete">✕</button>
+                                    <button class="move-up" data-index="10" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="10" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="10" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="10" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="9">
-                                <span class="index-badge">#10</span>
+                            <div class="task-item " data-index="11" style="cursor: default;">
+                                <span class="index-badge">#12</span>
                                 <span class="task-title">Structure project information for BOM preparation</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="9" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="9" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="9" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="9" title="Delete">✕</button>
+                                    <button class="move-up" data-index="11" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="11" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="11" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="11" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="10">
-                                <span class="index-badge">#11</span>
+                            <div class="task-item " data-index="12" style="cursor: default;">
+                                <span class="index-badge">#13</span>
                                 <span class="task-title">Identify and categorize finished-goods items</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="10" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="10" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="10" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="10" title="Delete">✕</button>
+                                    <button class="move-up" data-index="12" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="12" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="12" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="12" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="11">
-                                <span class="index-badge">#12</span>
+                            <div class="task-item " data-index="13" style="cursor: default;">
+                                <span class="index-badge">#14</span>
                                 <span class="task-title">Review existing product master data</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="11" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="11" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="11" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="11" title="Delete">✕</button>
+                                    <button class="move-up" data-index="13" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="13" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="13" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="13" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="12">
-                                <span class="index-badge">#13</span>
+                            <div class="task-item " data-index="14" style="cursor: default;">
+                                <span class="index-badge">#15</span>
+                                <span class="task-title">Compile BOM requirements for finished goods</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="14" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="14" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="14" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="14" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="15" style="cursor: default;">
+                                <span class="index-badge">#16</span>
+                                <span class="task-title">Prepare BOM data for system upload</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="15" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="15" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="15" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="15" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="16" style="cursor: default;">
+                                <span class="index-badge">#17</span>
+                                <span class="task-title">Upload BOMs into Odoo</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="16" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="16" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="16" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="16" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="17" style="cursor: default;">
+                                <span class="index-badge">#18</span>
+                                <span class="task-title">Add material and production costing to BOMs</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="17" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="17" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="17" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="17" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="18" style="cursor: default;">
+                                <span class="index-badge">#19</span>
+                                <span class="task-title">Verify BOM calculations against actual products</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="18" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="18" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="18" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="18" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="19" style="cursor: default;">
+                                <span class="index-badge">#20</span>
+                                <span class="task-title">Link stock, BOM and costing information</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="19" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="19" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="19" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="19" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="20" style="cursor: default;">
+                                <span class="index-badge">#21</span>
+                                <span class="task-title">Prepare six-month operational / costing data</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="20" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="20" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="20" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="20" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="21" style="cursor: default;">
+                                <span class="index-badge">#22</span>
+                                <span class="task-title">Conduct six-month trend and variance analysis</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="21" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="21" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="21" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="21" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="22" style="cursor: default;">
+                                <span class="index-badge">#23</span>
                                 <span class="task-title">Review initial operational workflows internally</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="12" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="12" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="12" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="12" title="Delete">✕</button>
+                                    <button class="move-up" data-index="22" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="22" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="22" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="22" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="13">
-                                <span class="index-badge">#14</span>
+                            <div class="task-item " data-index="23" style="cursor: default;">
+                                <span class="index-badge">#24</span>
+                                <span class="task-title">Review HR access requirements by role</span>
+                                <span class="task-status done">Done</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="23" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="23" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="23" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="23" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="24" style="cursor: default;">
+                                <span class="index-badge">#25</span>
                                 <span class="task-title">Conduct initial CRM functionality testing</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="13" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="13" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="13" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="13" title="Delete">✕</button>
+                                    <button class="move-up" data-index="24" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="24" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="24" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="24" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="14">
-                                <span class="index-badge">#15</span>
+                            <div class="task-item " data-index="25" style="cursor: default;">
+                                <span class="index-badge">#26</span>
                                 <span class="task-title">Review and validate operational workflows</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="14" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="14" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="14" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="14" title="Delete">✕</button>
+                                    <button class="move-up" data-index="25" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="25" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="25" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="25" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="15">
-                                <span class="index-badge">#16</span>
+                            <div class="task-item " data-index="26" style="cursor: default;">
+                                <span class="index-badge">#27</span>
                                 <span class="task-title">Identify required workflow amendments</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="15" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="15" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="15" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="15" title="Delete">✕</button>
+                                    <button class="move-up" data-index="26" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="26" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="26" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="26" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="16">
-                                <span class="index-badge">#17</span>
+                            <div class="task-item " data-index="27" style="cursor: default;">
+                                <span class="index-badge">#28</span>
                                 <span class="task-title">Amend workflow following discussions with RESON</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="16" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="16" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="16" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="16" title="Delete">✕</button>
+                                    <button class="move-up" data-index="27" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="27" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="27" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="27" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="17">
-                                <span class="index-badge">#18</span>
-                                <span class="task-title">Collect team-member email lists from all HODs</span>
-                                <span class="task-status done">Done</span>
-                                
-                                <span class="task-actions">
-                                    <button class="move-up" data-index="17" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="17" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="17" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="17" title="Delete">✕</button>
-                                </span>
-                            </div>
-                        
-                            <div class="task-item " data-index="18">
-                                <span class="index-badge">#19</span>
+                            <div class="task-item " data-index="28" style="cursor: default;">
+                                <span class="index-badge">#29</span>
                                 <span class="task-title">Submit additional development requirements to RESON</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="18" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="18" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="18" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="18" title="Delete">✕</button>
+                                    <button class="move-up" data-index="28" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="28" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="28" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="28" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="19">
-                                <span class="index-badge">#20</span>
+                            <div class="task-item " data-index="29" style="cursor: default;">
+                                <span class="index-badge">#30</span>
                                 <span class="task-title">Begin preparation of realistic staging/testing environment</span>
                                 <span class="task-status done">Done</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="19" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="19" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="19" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="19" title="Delete">✕</button>
+                                    <button class="move-up" data-index="29" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="29" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="29" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="29" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item current" data-index="20">
-                                <span class="index-badge">#21</span>
-                                <span class="task-title">Finalize and release training schedule</span>
+                            <div class="task-item current" data-index="30" style="cursor: default;">
+                                <span class="index-badge">#31</span>
+                                <span class="task-title">Complete internal testing of amended workflow with RESON</span>
                                 <span class="task-status current">Current</span>
                                 <span class="current-badge">⭐ Current</span>
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="20" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="20" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="20" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="20" title="Delete">✕</button>
+                                    <button class="move-up" data-index="30" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="30" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="30" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="30" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="21">
-                                <span class="index-badge">#22</span>
-                                <span class="task-title">Complete internal testing of amended workflow with RESON</span>
+                            <div class="task-item " data-index="31" style="cursor: default;">
+                                <span class="index-badge">#32</span>
+                                <span class="task-title">Conduct final workflow review with RESON</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="21" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="21" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="21" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="21" title="Delete">✕</button>
+                                    <button class="move-up" data-index="31" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="31" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="31" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="31" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="22">
-                                <span class="index-badge">#23</span>
-                                <span class="task-title">Verify employee access to staging environment</span>
-                                <span class="task-status done">Done</span>
+                            <div class="task-item " data-index="32" style="cursor: default;">
+                                <span class="index-badge">#33</span>
+                                <span class="task-title">Close all remaining workflow amendments / development points</span>
+                                <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="22" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="22" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="22" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="22" title="Delete">✕</button>
+                                    <button class="move-up" data-index="32" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="32" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="32" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="32" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="23">
-                                <span class="index-badge">#24</span>
+                            <div class="task-item " data-index="33" style="cursor: default;">
+                                <span class="index-badge">#34</span>
                                 <span class="task-title">Confirm staging environment reflects the final approved workflow</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="23" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="23" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="23" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="23" title="Delete">✕</button>
+                                    <button class="move-up" data-index="33" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="33" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="33" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="33" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="24">
-                                <span class="index-badge">#25</span>
+                            <div class="task-item " data-index="34" style="cursor: default;">
+                                <span class="index-badge">#35</span>
+                                <span class="task-title">Validate staging environment using realistic operational data</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="34" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="34" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="34" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="34" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="35" style="cursor: default;">
+                                <span class="index-badge">#36</span>
+                                <span class="task-title">Finalize HR role/access matrix</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="35" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="35" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="35" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="35" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="36" style="cursor: default;">
+                                <span class="index-badge">#37</span>
+                                <span class="task-title">Collect team-member email lists from all HODs</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="36" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="36" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="36" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="36" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="37" style="cursor: default;">
+                                <span class="index-badge">#38</span>
+                                <span class="task-title">Verify employee access to staging environment</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="37" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="37" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="37" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="37" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="38" style="cursor: default;">
+                                <span class="index-badge">#39</span>
+                                <span class="task-title">Finalize and release training schedule</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="38" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="38" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="38" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="38" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="39" style="cursor: default;">
+                                <span class="index-badge">#40</span>
                                 <span class="task-title">Train Lead Generators &amp; CS Team</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="24" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="24" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="24" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="24" title="Delete">✕</button>
+                                    <button class="move-up" data-index="39" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="39" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="39" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="39" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="25">
-                                <span class="index-badge">#26</span>
+                            <div class="task-item " data-index="40" style="cursor: default;">
+                                <span class="index-badge">#41</span>
                                 <span class="task-title">Train Designers, Design HOD &amp; Eissa Moosa</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="25" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="25" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="25" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="25" title="Delete">✕</button>
+                                    <button class="move-up" data-index="40" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="40" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="40" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="40" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="26">
-                                <span class="index-badge">#27</span>
+                            <div class="task-item " data-index="41" style="cursor: default;">
+                                <span class="index-badge">#42</span>
                                 <span class="task-title">Train Production HOD Team</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="26" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="26" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="26" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="26" title="Delete">✕</button>
+                                    <button class="move-up" data-index="41" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="41" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="41" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="41" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="27">
-                                <span class="index-badge">#28</span>
+                            <div class="task-item " data-index="42" style="cursor: default;">
+                                <span class="index-badge">#43</span>
+                                <span class="task-title">Conduct developer/consultant pretest across complete workflow</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="42" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="42" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="42" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="42" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="43" style="cursor: default;">
+                                <span class="index-badge">#44</span>
+                                <span class="task-title">Log and prioritize issues identified during pretest</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="43" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="43" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="43" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="43" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="44" style="cursor: default;">
+                                <span class="index-badge">#45</span>
+                                <span class="task-title">Resolve critical issues and retest affected workflows</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="44" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="44" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="44" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="44" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="45" style="cursor: default;">
+                                <span class="index-badge">#46</span>
                                 <span class="task-title">Confirm system readiness for production deployment</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="27" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="27" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="27" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="27" title="Delete">✕</button>
+                                    <button class="move-up" data-index="45" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="45" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="45" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="45" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="28">
-                                <span class="index-badge">#29</span>
+                            <div class="task-item " data-index="46" style="cursor: default;">
+                                <span class="index-badge">#47</span>
+                                <span class="task-title">Deploy finalized system to production environment</span>
+                                <span class="task-status pending">Pending</span>
+                                
+                                <span class="task-actions">
+                                    <button class="move-up" data-index="46" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="46" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="46" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="46" title="Delete" disabled="">✕</button>
+                                </span>
+                            </div>
+                        
+                            <div class="task-item " data-index="47" style="cursor: default;">
+                                <span class="index-badge">#48</span>
                                 <span class="task-title">Conduct live UAT with HODs and employees</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="28" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="28" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="28" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="28" title="Delete">✕</button>
+                                    <button class="move-up" data-index="47" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="47" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="47" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="47" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="29">
-                                <span class="index-badge">#30</span>
+                            <div class="task-item " data-index="48" style="cursor: default;">
+                                <span class="index-badge">#49</span>
                                 <span class="task-title">Resolve final UAT issues and obtain departmental confirmation</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="29" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="29" title="Move down">⬇</button>
-                                    <button class="set-current" data-index="29" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="29" title="Delete">✕</button>
+                                    <button class="move-up" data-index="48" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="48" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="48" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="48" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         
-                            <div class="task-item " data-index="30">
-                                <span class="index-badge">#31</span>
+                            <div class="task-item " data-index="49" style="cursor: default;">
+                                <span class="index-badge">#50</span>
                                 <span class="task-title">Final project review, HOD sign-off, system handover and project closure</span>
                                 <span class="task-status pending">Pending</span>
                                 
                                 <span class="task-actions">
-                                    <button class="move-up" data-index="30" title="Move up">⬆</button>
-                                    <button class="move-down" data-index="30" title="Move down" disabled="">⬇</button>
-                                    <button class="set-current" data-index="30" title="Set as current">🎯</button>
-                                    <button class="delete-task danger" data-index="30" title="Delete">✕</button>
+                                    <button class="move-up" data-index="49" title="Move up" disabled="">⬆</button>
+                                    <button class="move-down" data-index="49" title="Move down" disabled="">⬇</button>
+                                    <button class="set-current" data-index="49" title="Set as current" disabled="">🎯</button>
+                                    <button class="delete-task danger" data-index="49" title="Delete" disabled="">✕</button>
                                 </span>
                             </div>
                         </div>
@@ -1524,14 +1771,14 @@
 
         <!-- ─── ADD TASK ─── -->
         <div class="add-task-row">
-            <input type="text" id="newTaskInput" placeholder="New task title…" maxlength="120">
-            <select id="newTaskStatus">
+            <input type="text" id="newTaskInput" placeholder="New task title…" maxlength="120" disabled="">
+            <select id="newTaskStatus" disabled="">
                 <option value="pending">Pending</option>
                 <option value="current">Current</option>
                 <option value="done">Done</option>
                 <option value="blocked">Blocked</option>
             </select>
-            <button class="btn btn-primary" id="addTaskBtn">➕ Add</button>
+            <button class="btn btn-primary" id="addTaskBtn" disabled="">➕ Add</button>
         </div>
 
         <!-- ─── CONTROLS ─── -->
@@ -1552,14 +1799,14 @@
 
     <!-- ─── FLOATING LOCK ─── -->
     <div class="floating-lock" id="floatingLock" title="Toggle Lock (Ctrl+Shift+L)">
-        <button class="btn btn-lock" id="lockBtn">
-            <span class="lock-icon" id="floatingLockIcon">🔒</span>
-            <span id="floatingLockLabel">Lock</span>
+        <button class="btn btn-lock locked" id="lockBtn">
+            <span class="lock-icon" id="floatingLockIcon">🔓</span>
+            <span id="floatingLockLabel">Unlock</span>
         </button>
     </div>
 
     <!-- ─── TOAST ─── -->
-    <div class="toast success" id="toast">🔗 Share link copied to clipboard!</div>
+    
 
     <script>
         // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2180,6 +2427,7 @@
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
+
 
 
 </body></html>
